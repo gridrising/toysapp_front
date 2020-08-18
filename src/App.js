@@ -15,7 +15,6 @@ function App() {
           <Route path='/toypage/:id' component={ToyPage} />
           <Route exact path='/' component={HomePage} />
           <Route path='/catalog' component={CatalogPage} />
-
           <Route path='/table' component={TablePage} />
         </Switch>
       </Router>
