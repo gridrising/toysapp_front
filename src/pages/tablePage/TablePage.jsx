@@ -1,11 +1,8 @@
 import React from "react";
+import TableComponent from "../../components/TableComponent";
 
 const TablePage = () => {
-  return (
-    <div>
-      <h1>Table Page</h1>
-    </div>
-  );
+  return <TableComponent />;
 };
 
 export default TablePage;

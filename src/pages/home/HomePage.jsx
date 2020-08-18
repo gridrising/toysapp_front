@@ -49,7 +49,7 @@ const HomePage = (props) => {
                 <CardComponent
                   id={toy._id}
                   title={toy.title}
-                  imageURL={toy.image}
+                  imageURL={toy.imageUrl}
                   description={toy.body}
                   price={toy.price}
                 />
