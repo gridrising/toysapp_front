@@ -42,11 +42,13 @@ const names = ["Top sales", "New", "Sale"];
 
 export default function MultipleSelect(props) {
   const classes = useStyles();
+  const onChangeEdit = props.editComponentProps.onChange;
+  const valueEdit = props.editComponentProps.value;
   const [personName, setPersonName] = React.useState([]);
   const handleChange = (event) => {
     setPersonName(event.target.value);
-    props.editComponentProps.onChange(event.target.value);
-    console.log(props.editComponentProps.value);
+    onChangeEdit(event.target.value);
+
   };
 
   return (
@@ -57,7 +59,7 @@ export default function MultipleSelect(props) {
           labelId='demo-mutiple-checkbox-label'
           id='demo-mutiple-checkbox'
           multiple
-          value={props.editComponentProps.value}
+          value={valueEdit ? valueEdit : []}
           onChange={handleChange}
           input={<Input />}
           renderValue={(selected) => selected.join(", ")}
@@ -66,7 +68,7 @@ export default function MultipleSelect(props) {
           {names.map((name) => (
             <MenuItem key={name} value={name}>
               <Checkbox
-                checked={props.editComponentProps.value.indexOf(name) > -1}
+                checked={valueEdit ? valueEdit.indexOf(name) > -1 : false}
               />
               <ListItemText primary={name} />
             </MenuItem>

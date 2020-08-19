@@ -33,15 +33,6 @@ const MaterialTableDemo = (props) => {
       getToysTable();
     }
   }, [getToysTable, toysTable]);
-  useEffect(() => {
-    getToysTable();
-  }, [addToyTable]);
-  useEffect(() => {
-    getToysTable();
-  }, [deleteToyTable]);
-  useEffect(() => {
-    getToysTable();
-  }, [deleteToyTable]);
 
   const [state, setState] = React.useState({
     columns: [
@@ -105,20 +96,11 @@ const MaterialTableDemo = (props) => {
             resolve();
             await addToyTable(newData);
           }),
-        //   new Promise((resolve) => {
-        //     setTimeout(() => {
-        //       resolve();
-        //       setState((prevState) => {
-        //         const data = [...prevState.data];
-        //         data.push(newData);
-        //         return { ...prevState, data };
-        //       });
-        //     }, 600);
-        //   }),
         onRowUpdate: (newData, oldData) =>
           new Promise(async (resolve) => {
             resolve();
-            if (newData !== oldData) await updateToyTable(newData);
+
+            await updateToyTable(newData);
           }),
         onRowDelete: (oldData) =>
           new Promise(async (resolve) => {

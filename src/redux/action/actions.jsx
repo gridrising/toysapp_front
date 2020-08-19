@@ -47,8 +47,9 @@ export const getToysTable = () => {
 export const addToyTable = (payload) => {
   return async (dispatch) => {
     try {
-      await axios.post(`http://localhost:3000/table`, payload);
-      dispatch({ type: ADD_TOY_TABLE, payload });
+      const { data } = await axios.post(`http://localhost:3000/table`, payload);
+      const datatWithId = { ...payload, _id: data._id };
+      dispatch({ type: ADD_TOY_TABLE, payload: datatWithId });
     } catch (error) {
       console.log(error);
     }
