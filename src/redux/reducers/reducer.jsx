@@ -5,11 +5,16 @@ import {
   LOADING_SINGLE,
   LOADING_TOY_SUCCESS,
   LOADING_TOY_FAILED,
+  LOADING_TABLE,
+  ADD_TOY_TABLE,
+  DELETE_TOY_TABLE,
+  UPDATE_TOY_TABLE,
 } from "../action-types";
 const initialState = {
   toys: [],
   isLoading: false,
   isLoadingSingle: false,
+  isLoadingTabel: false,
   errorMsg: false,
   toy: {},
 };
@@ -28,6 +33,25 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, toy: action.payload, isLoadingSingle: false };
     case LOADING_TOY_FAILED:
       return { ...state, isLoadingSingle: false };
+    case LOADING_TABLE:
+      return { ...state, isLoadingTabel: true };
+    case ADD_TOY_TABLE: {
+      return { ...state, toys: [...state.toys, action.payload] };
+    }
+    case DELETE_TOY_TABLE: {
+      return {
+        ...state,
+        toys: state.toys.filter((toy) => toy._id !== action.payload),
+      };
+    }
+    case UPDATE_TOY_TABLE: {
+      return {
+        ...state,
+        toys: state.toys.map((toy) =>
+          toy._id === action.payload._id ? action.payload : toy
+        ),
+      };
+    }
     default:
       return state;
   }

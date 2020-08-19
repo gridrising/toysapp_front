@@ -44,17 +44,19 @@ const HomePage = (props) => {
             justify='center'
             spacing={3}
           >
-            {toys.map((toy) => (
-              <Grid key={toy._id} item>
-                <CardComponent
-                  id={toy._id}
-                  title={toy.title}
-                  imageURL={toy.image}
-                  description={toy.body}
-                  price={toy.price}
-                />
-              </Grid>
-            ))}
+            {toys.map((toy) =>
+              toy.status.includes("Top sales") ? (
+                <Grid key={toy._id} item>
+                  <CardComponent
+                    id={toy._id}
+                    title={toy.title}
+                    imageURL={toy.imageUrl}
+                    description={toy.body}
+                    price={toy.price}
+                  />
+                </Grid>
+              ) : null
+            )}
           </Grid>
         </div>
       </>
