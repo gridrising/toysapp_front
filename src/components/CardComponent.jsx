@@ -21,6 +21,15 @@ const useStyles = makeStyles({
   cardLink: {
     textDecoration: "none",
   },
+  statusButton: {
+    maxWidth: "50px",
+    margin: "5px 0",
+    position: "absolute",
+    zIndex: "1000",
+    top: "10px",
+    right: "0px",
+    borderRadius: "0",
+  },
 });
 
 export default function ImgMediaCard(props) {
@@ -30,6 +39,14 @@ export default function ImgMediaCard(props) {
     <Link to={`/toypage/${id}`} className={classes.cardLink}>
       <Card className={classes.root}>
         <CardActionArea>
+          <Button
+            className={classes.statusButton}
+            variant='contained'
+            color='secondary'
+            size='small'
+          >
+            {"Top sales"}
+          </Button>
           <CardMedia
             component='img'
             alt='Contemplative Reptile'
