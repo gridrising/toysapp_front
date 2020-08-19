@@ -53,6 +53,7 @@ const HomePage = (props) => {
                     imageURL={toy.imageUrl}
                     description={toy.body}
                     price={toy.price}
+                    status={"Top sales"}
                   />
                 </Grid>
               ) : null

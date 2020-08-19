@@ -32,9 +32,9 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ImgMediaCard(props) {
+function CardComponent(props) {
   const classes = useStyles();
-  const { id, title, imageURL, description, price } = props;
+  const { id, title, imageURL, description, price, status } = props;
   return (
     <Link to={`/toypage/${id}`} className={classes.cardLink}>
       <Card className={classes.root}>
@@ -45,7 +45,7 @@ export default function ImgMediaCard(props) {
             color='secondary'
             size='small'
           >
-            {"Top sales"}
+            {`${status}`}
           </Button>
           <CardMedia
             component='img'
@@ -75,3 +75,4 @@ export default function ImgMediaCard(props) {
     </Link>
   );
 }
+export default CardComponent;
