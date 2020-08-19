@@ -13,8 +13,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   statusButton: {
-    maxWidth: "50px",
-    margin: "5px 0",
+    maxWidth: "100px",
+    margin: "2px 0",
+    padding: "3px",
   },
 });
 

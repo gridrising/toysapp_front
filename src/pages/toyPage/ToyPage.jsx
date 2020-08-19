@@ -40,7 +40,7 @@ const ToyPage = (props) => {
                 <Box className={classes.imgContainer}>
                   <CardMedia
                     component='img'
-                    image={toy.image}
+                    image={toy.imageUrl}
                     title={toy.title}
                     height='auto'
                     maxWidth='100%'
