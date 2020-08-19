@@ -1,10 +1,32 @@
 import React, { useEffect } from "react";
 import MaterialTable from "material-table";
 import { connect } from "react-redux";
-import { getToysTable, addToyTable } from "../redux/action/actions";
+import {
+  getToysTable,
+  addToyTable,
+  deleteToyTable,
+  updateToyTable,
+} from "../redux/action/actions";
+import MultiplieSelect from "../components/MultipleSelectComponent";
+import { Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  statusButton: {
+    maxWidth: "50px",
+    margin: "5px 0",
+  },
+});
 
 const MaterialTableDemo = (props) => {
-  const { toysTable, getToysTable, addToyTable } = props;
+  const classes = useStyles();
+  const {
+    toysTable,
+    getToysTable,
+    addToyTable,
+    deleteToyTable,
+    updateToyTable,
+  } = props;
   useEffect(() => {
     if (!toysTable.length) {
       getToysTable();
@@ -13,6 +35,12 @@ const MaterialTableDemo = (props) => {
   useEffect(() => {
     getToysTable();
   }, [addToyTable]);
+  useEffect(() => {
+    getToysTable();
+  }, [deleteToyTable]);
+  useEffect(() => {
+    getToysTable();
+  }, [deleteToyTable]);
 
   const [state, setState] = React.useState({
     columns: [
@@ -34,6 +62,23 @@ const MaterialTableDemo = (props) => {
       {
         title: "Status",
         field: "status",
+        editComponent: (props) => (
+          <MultiplieSelect editComponentProps={props} />
+        ),
+        render: (rowData) => (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {rowData.status.map((OneRowData) => (
+              <Button
+                className={classes.statusButton}
+                variant='contained'
+                color='secondary'
+                key={Math.random()}
+              >
+                {OneRowData}
+              </Button>
+            ))}
+          </div>
+        ),
       },
       { title: "Description", field: "body" },
       { title: "Price in $", field: "price", type: "numeric" },
@@ -70,28 +115,14 @@ const MaterialTableDemo = (props) => {
         //     }, 600);
         //   }),
         onRowUpdate: (newData, oldData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-              if (oldData) {
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  data[data.indexOf(oldData)] = newData;
-                  return { ...prevState, data };
-                });
-              }
-            }, 600);
+          new Promise(async (resolve) => {
+            resolve();
+            if (newData !== oldData) await updateToyTable(newData);
           }),
         onRowDelete: (oldData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-              setState((prevState) => {
-                const data = [...prevState.data];
-                data.splice(data.indexOf(oldData), 1);
-                return { ...prevState, data };
-              });
-            }, 600);
+          new Promise(async (resolve) => {
+            resolve();
+            await deleteToyTable(oldData._id);
           }),
       }}
     />
@@ -103,5 +134,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getToysTable,
   addToyTable,
+  deleteToyTable,
+  updateToyTable,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(MaterialTableDemo);

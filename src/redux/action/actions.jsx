@@ -8,6 +8,8 @@ import {
   LOADING_SINGLE,
   LOADING_TABLE,
   ADD_TOY_TABLE,
+  DELETE_TOY_TABLE,
+  UPDATE_TOY_TABLE,
 } from "../action-types";
 export const getToys = () => {
   return async (dispatch) => {
@@ -47,6 +49,27 @@ export const addToyTable = (payload) => {
     try {
       await axios.post(`http://localhost:3000/table`, payload);
       dispatch({ type: ADD_TOY_TABLE, payload });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const deleteToyTable = (payload) => {
+  return async (dispatch) => {
+    try {
+      await axios.delete(`http://localhost:3000/table/${payload}`);
+      dispatch({ type: DELETE_TOY_TABLE, payload });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+export const updateToyTable = (payload) => {
+  return async (dispatch) => {
+    try {
+      await axios.patch(`http://localhost:3000/table/${payload._id}`, payload);
+      dispatch({ type: UPDATE_TOY_TABLE, payload });
     } catch (error) {
       console.log(error);
     }

@@ -7,6 +7,8 @@ import {
   LOADING_TOY_FAILED,
   LOADING_TABLE,
   ADD_TOY_TABLE,
+  DELETE_TOY_TABLE,
+  UPDATE_TOY_TABLE,
 } from "../action-types";
 const initialState = {
   toys: [],
@@ -35,6 +37,20 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, isLoadingTabel: true };
     case ADD_TOY_TABLE: {
       return { ...state, toys: [...state.toys, action.payload] };
+    }
+    case DELETE_TOY_TABLE: {
+      return {
+        ...state,
+        toys: state.toys.filter((toy) => toy._id !== action.payload),
+      };
+    }
+    case UPDATE_TOY_TABLE: {
+      return {
+        ...state,
+        toys: state.toys.map((toy) =>
+          toy._id === action.payload._id ? action.payload : toy
+        ),
+      };
     }
     default:
       return state;
