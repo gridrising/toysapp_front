@@ -9,7 +9,9 @@ import {
   ADD_TOY_TABLE,
   DELETE_TOY_TABLE,
   UPDATE_TOY_TABLE,
-} from "../action-types";
+  REGISTER_USER_SUCCESS,
+} from '../action-types';
+
 const initialState = {
   toys: [],
   isLoading: false,
@@ -17,6 +19,7 @@ const initialState = {
   isLoadingTabel: false,
   errorMsg: false,
   toy: {},
+  isRegistrationSucced: false,
 };
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -47,9 +50,13 @@ const rootReducer = (state = initialState, action) => {
     case UPDATE_TOY_TABLE: {
       return {
         ...state,
-        toys: state.toys.map((toy) =>
-          toy._id === action.payload._id ? action.payload : toy
-        ),
+        toys: state.toys.map((toy) => (toy._id === action.payload._id ? action.payload : toy)),
+      };
+    }
+    case REGISTER_USER_SUCCESS: {
+      return {
+        ...state,
+
       };
     }
     default:

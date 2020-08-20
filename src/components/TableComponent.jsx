@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
-import MaterialTable from "material-table";
-import { connect } from "react-redux";
+import React, { useEffect } from 'react';
+import MaterialTable from 'material-table';
+import { connect } from 'react-redux';
+import { Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   getToysTable,
   addToyTable,
   deleteToyTable,
   updateToyTable,
-} from "../redux/action/actions";
-import MultiplieSelect from "../components/MultipleSelectComponent";
-import { Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from '../redux/action/actions';
+import MultiplieSelect from './MultipleSelectComponent';
 
 const useStyles = makeStyles({
   statusButton: {
-    maxWidth: "100px",
-    margin: "2px 0",
-    padding: "3px",
+    maxWidth: '100px',
+    margin: '2px 0',
+    padding: '3px',
   },
 });
 
@@ -37,33 +37,33 @@ const MaterialTableDemo = (props) => {
   const [state, setState] = React.useState({
     columns: [
       {
-        title: "Avatar",
-        field: "imageUrl",
+        title: 'Avatar',
+        field: 'imageUrl',
         render: (rowData) => (
           <img
             src={rowData.imageUrl}
-            alt=''
-            style={{ width: 40, borderRadius: "50%" }}
+            alt=""
+            style={{ width: 40, borderRadius: '50%' }}
           />
         ),
       },
       {
-        title: "Name",
-        field: "title",
+        title: 'Name',
+        field: 'title',
       },
       {
-        title: "Status",
-        field: "status",
+        title: 'Status',
+        field: 'status',
         editComponent: (props) => (
           <MultiplieSelect editComponentProps={props} />
         ),
         render: (rowData) => (
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {rowData.status.map((OneRowData) => (
               <Button
                 className={classes.statusButton}
-                variant='contained'
-                color='secondary'
+                variant="contained"
+                color="secondary"
                 key={Math.random()}
               >
                 {OneRowData}
@@ -72,41 +72,38 @@ const MaterialTableDemo = (props) => {
           </div>
         ),
       },
-      { title: "Description", field: "body" },
-      { title: "Price in $", field: "price", type: "numeric" },
+      { title: 'Description', field: 'body' },
+      { title: 'Price in $', field: 'price', type: 'numeric' },
       {
-        title: "Amounts",
-        field: "amounts",
-        type: "numeric",
+        title: 'Amounts',
+        field: 'amounts',
+        type: 'numeric',
       },
     ],
   });
   return (
     <MaterialTable
-      title='Editable Example'
+      title="Editable Example"
       options={{
-        cellStyle: { align: "center" },
-        headerStyle: { align: "center" },
+        cellStyle: { align: 'center' },
+        headerStyle: { align: 'center' },
       }}
       columns={state.columns}
       data={toysTable}
       editable={{
-        onRowAdd: (newData) =>
-          new Promise(async (resolve) => {
-            resolve();
-            await addToyTable(newData);
-          }),
-        onRowUpdate: (newData, oldData) =>
-          new Promise(async (resolve) => {
-            resolve();
+        onRowAdd: (newData) => new Promise(async (resolve) => {
+          resolve();
+          await addToyTable(newData);
+        }),
+        onRowUpdate: (newData) => new Promise(async (resolve) => {
+          resolve();
 
-            await updateToyTable(newData);
-          }),
-        onRowDelete: (oldData) =>
-          new Promise(async (resolve) => {
-            resolve();
-            await deleteToyTable(oldData._id);
-          }),
+          await updateToyTable(newData);
+        }),
+        onRowDelete: (oldData) => new Promise(async (resolve) => {
+          resolve();
+          await deleteToyTable(oldData._id);
+        }),
       }}
     />
   );

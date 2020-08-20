@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import CardComponent from "../../components/CardComponent";
-import { Grid, makeStyles } from "@material-ui/core";
-import { connect } from "react-redux";
-import { getToys } from "../../redux/action/actions";
+import React, { useEffect } from 'react';
+import { Grid, makeStyles } from '@material-ui/core';
+import { connect } from 'react-redux';
+import CardComponent from '../../components/CardComponent';
+import { getToys } from '../../redux/action/actions';
 
-const useStyle = makeStyles((theme) => ({
+const useStyle = makeStyles(() => ({
   cards: {
-    maxWidth: "80%",
+    maxWidth: '80%',
   },
   cardsContainer: {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: "50px",
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '50px',
   },
 }));
 const CatalogPage = (props) => {
@@ -22,7 +22,7 @@ const CatalogPage = (props) => {
   }, [getToys]);
   return (
     <div className={classes.cardsContainer}>
-      <Grid className={classes.cards} container justify='center' spacing={3}>
+      <Grid className={classes.cards} container justify="center" spacing={3}>
         {toys.map((toy) => (
           <Grid key={toy._id} item>
             <CardComponent
@@ -31,7 +31,7 @@ const CatalogPage = (props) => {
               imageURL={toy.imageUrl}
               description={toy.body}
               price={toy.price}
-              status={"Top sales"}
+              status="Top sales"
             />
           </Grid>
         ))}
