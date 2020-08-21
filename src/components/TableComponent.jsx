@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import MaterialTable from 'material-table';
 import { connect } from 'react-redux';
-import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   getToysTable,
@@ -10,12 +9,16 @@ import {
   updateToyTable,
 } from '../redux/action/actions';
 import MultiplieSelect from './MultipleSelectComponent';
+import StatusMarker from './StatusMarker';
 
 const useStyles = makeStyles({
-  statusButton: {
+  statusMarker: {
     maxWidth: '100px',
     margin: '2px 0',
     padding: '3px',
+    position: 'relative',
+    top: '0',
+    right: '0',
   },
 });
 
@@ -34,7 +37,7 @@ const MaterialTableDemo = (props) => {
     }
   }, [getToysTable, toysTable]);
 
-  const [state, setState] = React.useState({
+  const [state] = React.useState({
     columns: [
       {
         title: 'Avatar',
@@ -60,14 +63,7 @@ const MaterialTableDemo = (props) => {
         render: (rowData) => (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {rowData.status.map((OneRowData) => (
-              <Button
-                className={classes.statusButton}
-                variant="contained"
-                color="secondary"
-                key={Math.random()}
-              >
-                {OneRowData}
-              </Button>
+              <StatusMarker card={false} className={classes.statusMarker} key={Math.random()} status={OneRowData} />
             ))}
           </div>
         ),

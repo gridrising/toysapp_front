@@ -12,6 +12,15 @@ import {
   UPDATE_TOY_TABLE,
   REGISTER_USER_FAILED,
   REGISTER_USER_SUCCESS,
+  HIDE_REGISTRATION_MSG,
+  LOGGINING_BEGIN,
+  LOGGINING_SUCCESS,
+  LOGGINING_FAILED,
+  CHECK_AUTH_BEGIN,
+  CHECK_AUTH_SUCCESS,
+  CHECK_AUTH_FAILED,
+  COMPARE_TOKEN,
+  HIDE_LOGIN_ERROR,
 } from '../action-types';
 
 export const getToys = () => async (dispatch) => {
@@ -72,7 +81,33 @@ export const registerUser = (payload) => async (dispatch) => {
   try {
     await axios.post('http://localhost:3000/register', payload);
     dispatch({ type: REGISTER_USER_SUCCESS, payload });
+    setTimeout(() => (dispatch({ type: HIDE_REGISTRATION_MSG })), 5000);
   } catch (error) {
-    dispatch({ type: REGISTER_USER_FAILED, payload: error });
+    dispatch({ type: REGISTER_USER_FAILED, payload: error.response.data });
+    setTimeout(() => (dispatch({ type: HIDE_REGISTRATION_MSG })), 5000);
   }
 };
+export const loginUser = (payload) => async (dispatch) => {
+  try {
+    dispatch({ type: LOGGINING_BEGIN });
+    const { data } = await axios.post('http://localhost:3000/login', payload);
+    dispatch({ type: LOGGINING_SUCCESS, payload: data });
+  } catch (error) {
+    setTimeout(() => (dispatch({ type: HIDE_LOGIN_ERROR })), 5000);
+    dispatch({ type: LOGGINING_FAILED, payload: error.response.data.message });
+  }
+};
+export const checkAuth = (token, id) => async (dispatch) => {
+  try {
+    dispatch({ type: CHECK_AUTH_BEGIN });
+    const response = await axios.post('http://localhost:3000/users/logged', { token, id });
+    if (response.data === 'auth error') {
+      dispatch({ type: CHECK_AUTH_FAILED, payload: 'auth failed' });
+    } else {
+      dispatch({ type: CHECK_AUTH_SUCCESS });
+    }
+  } catch (error) {
+    console.log('something wrong', error);
+  }
+};
+export const compareToken = () => ({ type: COMPARE_TOKEN });

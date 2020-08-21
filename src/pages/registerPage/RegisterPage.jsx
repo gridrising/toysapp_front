@@ -7,6 +7,7 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import { Link } from 'react-router-dom';
 import { registerUser } from '../../redux/action/actions';
 
@@ -28,7 +29,7 @@ const useStyle = makeStyles(() => ({
 }));
 
 const RegisterPage = (props) => {
-  const { registerUser } = props;
+  const { registerUser, isRegistrationSucced, registrationError } = props;
   const classes = useStyle();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -51,19 +52,42 @@ const RegisterPage = (props) => {
   };
   return (
     <Container m="auto">
-      <form onSubmit={handleSubmit} className={classes.formPositioning} noValidate autoComplete="off">
+      <form onSubmit={handleSubmit} className={classes.formPositioning} autoComplete="off">
         <Typography className={classes.formElement} variant="h2">
           Registration
         </Typography>
-        <TextField className={classes.formElement} id="email" label="Email" value={email} onChange={handleChangeEmail} />
-        <TextField className={classes.formElement} id="login" label="Login" value={name} onChange={handleChangeName} />
+        <TextField
+          required
+          className={classes.formElement}
+          id="email"
+          label="Email"
+          type="email"
+          inputProps={{ minLength: '7' }}
+          value={email}
+          onChange={handleChangeEmail}
+        />
+        <TextField required inputProps={{ minLength: '6' }} className={classes.formElement} id="login" label="Login" value={name} onChange={handleChangeName} />
         <TextField
           className={classes.formElement}
           id="password"
           label="Password"
+          type="password"
+          inputProps={{ minLength: '6' }}
+          required
           value={password}
           onChange={handleChangePassword}
         />
+        {isRegistrationSucced ? (
+          <Alert variant="outlined" severity="success">
+            You register successfully! =)
+            Now try to log in!
+          </Alert>
+        ) : <></>}
+        {isRegistrationSucced === false ? (
+          <Alert variant="outlined" severity="error">
+            {registrationError}
+          </Alert>
+        ) : <></>}
         <div>
           <Link to="/login" className={classes.Link}>
             <Button
@@ -89,7 +113,8 @@ const RegisterPage = (props) => {
   );
 };
 const mapStateToProps = (state) => ({
-
+  isRegistrationSucced: state.isRegistrationSucced,
+  registrationError: state.registrationError,
 });
 
 const mapDispatchToProps = {

@@ -8,6 +8,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
+import StatusMarker from './StatusMarker';
 
 const useStyles = makeStyles({
   root: {
@@ -41,14 +42,15 @@ function CardComponent(props) {
     <Link to={`/toypage/${id}`} className={classes.cardLink}>
       <Card className={classes.root}>
         <CardActionArea>
-          <Button
+          {/* <Button
             className={classes.statusButton}
             variant="contained"
             color="secondary"
             size="small"
           >
             {`${status}`}
-          </Button>
+          </Button> */}
+          <StatusMarker card="true" status={status} />
           <CardMedia
             component="img"
             alt="Contemplative Reptile"

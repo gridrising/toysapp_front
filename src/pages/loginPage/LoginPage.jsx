@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import {
   Container,
   TextField,
@@ -6,7 +7,9 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import Alert from '@material-ui/lab/Alert';
+import { loginUser } from '../../redux/action/actions';
 
 const useStyle = makeStyles(() => ({
   formPositioning: {
@@ -24,13 +27,14 @@ const useStyle = makeStyles(() => ({
   },
 }));
 
-const LoginPage = () => {
+const LoginPage = (props) => {
+  const { loginUser, isUserLogged, loginError } = props;
   const classes = useStyle();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const handleSubmit = (e) => {
     e.preventDefault();
-    // loginUser();
+    loginUser({ email, password });
     setEmail('');
     setPassword('');
   };
@@ -40,20 +44,37 @@ const LoginPage = () => {
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
   };
-  return (
+  return (!isUserLogged ? (
     <Container m="auto">
-      <form onSubmit={handleSubmit} className={classes.formPositioning} noValidate autoComplete="off">
+      <form onSubmit={handleSubmit} className={classes.formPositioning} autoComplete="off">
         <Typography className={classes.formElement} variant="h2">
           Log in
         </Typography>
-        <TextField type="email" className={classes.formElement} id="email" label="Email" value={email} onChange={handleChangeEmail} />
+        <TextField
+          required
+          className={classes.formElement}
+          id="email"
+          label="Email"
+          type="email"
+          inputProps={{ minLength: '7' }}
+          value={email}
+          onChange={handleChangeEmail}
+        />
         <TextField
           className={classes.formElement}
           id="password"
           label="Password"
+          type="password"
+          inputProps={{ minLength: '6' }}
+          required
           value={password}
           onChange={handleChangePassword}
         />
+        {loginError ? (
+          <Alert variant="outlined" severity="error">
+            {loginError}
+          </Alert>
+        ) : <></>}
         <div>
           <Link to="/register" className={classes.Link}>
             <Button
@@ -76,7 +97,20 @@ const LoginPage = () => {
         </div>
       </form>
     </Container>
+  )
+    : (
+      <Redirect to="/" />
+    )
   );
 };
 
-export default LoginPage;
+const mapStateToProps = (state) => ({
+  isUserLogged: state.isUserLogged,
+  loginError: state.loginError,
+});
+
+const mapDispatchToProps = {
+  loginUser,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

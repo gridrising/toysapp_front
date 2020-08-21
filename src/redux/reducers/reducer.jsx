@@ -10,16 +10,32 @@ import {
   DELETE_TOY_TABLE,
   UPDATE_TOY_TABLE,
   REGISTER_USER_SUCCESS,
+  REGISTER_USER_FAILED,
+  HIDE_REGISTRATION_MSG,
+  LOGGINING_BEGIN,
+  LOGGINING_SUCCESS,
+  LOGGINING_FAILED,
+  CHECK_AUTH_BEGIN,
+  CHECK_AUTH_SUCCESS,
+  CHECK_AUTH_FAILED,
+  COMPARE_TOKEN,
+  HIDE_LOGIN_ERROR,
 } from '../action-types';
 
 const initialState = {
   toys: [],
   isLoading: false,
   isLoadingSingle: false,
-  isLoadingTabel: false,
+  isLoadingTable: false,
+  isLoadingUser: false,
   errorMsg: false,
   toy: {},
-  isRegistrationSucced: false,
+  isRegistrationSucced: null,
+  registrationError: null,
+  isUserLogged: false,
+  loggedUser: null,
+  loginError: null,
+  tokenCompared: false,
 };
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -37,7 +53,7 @@ const rootReducer = (state = initialState, action) => {
     case LOADING_TOY_FAILED:
       return { ...state, isLoadingSingle: false };
     case LOADING_TABLE:
-      return { ...state, isLoadingTabel: true };
+      return { ...state, isLoadingTable: true };
     case ADD_TOY_TABLE: {
       return { ...state, toys: [...state.toys, action.payload] };
     }
@@ -56,7 +72,81 @@ const rootReducer = (state = initialState, action) => {
     case REGISTER_USER_SUCCESS: {
       return {
         ...state,
-
+        isRegistrationSucced: true,
+      };
+    }
+    case REGISTER_USER_FAILED: {
+      return {
+        ...state,
+        isRegistrationSucced: false,
+        registrationError: action.payload,
+      };
+    }
+    case HIDE_REGISTRATION_MSG: {
+      return {
+        ...state,
+        isRegistrationSucced: null,
+      };
+    }
+    case LOGGINING_BEGIN: {
+      return {
+        ...state,
+        isUserLogged: false,
+        loggedUser: null,
+        isLoading: true,
+      };
+    }
+    case LOGGINING_SUCCESS: {
+      localStorage.setItem('auth-token', action.payload.token);
+      localStorage.setItem('logged-user', JSON.stringify(action.payload.user));
+      return {
+        ...state,
+        isLoading: false,
+        isUserLogged: true,
+        loggedUser: action.payload.user,
+      };
+    }
+    case LOGGINING_FAILED: {
+      return {
+        ...state,
+        isLoadingUser: false,
+        isUserLogged: false,
+        loginError: action.payload,
+      };
+    }
+    case HIDE_LOGIN_ERROR: {
+      return {
+        ...state,
+        loginError: null,
+      };
+    }
+    case CHECK_AUTH_BEGIN: {
+      return {
+        ...state,
+        isLoadingUser: true,
+      };
+    }
+    case CHECK_AUTH_SUCCESS: {
+      return {
+        ...state,
+        loggedUser: action.payload,
+        isUserLogged: true,
+        tokenCompared: true,
+        isLoadingUser: false,
+      };
+    }
+    case CHECK_AUTH_FAILED: {
+      return {
+        ...state,
+        isLoadingUser: false,
+        tokenCompared: true,
+        isUserLogged: false,
+      };
+    }
+    case COMPARE_TOKEN: {
+      return {
+        ...state,
+        tokenCompared: true,
       };
     }
     default:

@@ -44,9 +44,7 @@ export default function MultipleSelect(props) {
   const classes = useStyles();
   const onChangeEdit = props.editComponentProps.onChange;
   const valueEdit = props.editComponentProps.value;
-  const [personName, setPersonName] = React.useState([]);
   const handleChange = (event) => {
-    setPersonName(event.target.value);
     onChangeEdit(event.target.value);
   };
 

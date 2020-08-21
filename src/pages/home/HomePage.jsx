@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
-import { Grid, makeStyles, Typography } from '@material-ui/core';
+import {
+  Grid, makeStyles, Typography, Container, CircularProgress,
+} from '@material-ui/core';
 import { connect } from 'react-redux';
 import CardComponent from '../../components/CardComponent';
 import HomeBackground from '../../components/HomeBackground';
@@ -25,9 +27,7 @@ const HomePage = (props) => {
   return toysIsLoading ? (
     <>
       <HomeBackground />
-      <Typography variant="h2" align="center">
-        LOADING TOYS
-      </Typography>
+      <Container align="center"><CircularProgress /></Container>
     </>
   ) : (
     <>
