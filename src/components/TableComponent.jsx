@@ -1,21 +1,26 @@
-import React, { useEffect } from "react";
-import MaterialTable from "material-table";
-import { connect } from "react-redux";
+import React, { useEffect } from 'react';
+import MaterialTable from 'material-table';
+import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
+import { TextField } from '@material-ui/core';
 import {
   getToysTable,
   addToyTable,
   deleteToyTable,
   updateToyTable,
-} from "../redux/action/actions";
-import MultiplieSelect from "../components/MultipleSelectComponent";
-import { Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from '../redux/action/actions';
+import MultiplieSelect from './MultipleSelectComponent';
+import StatusMarker from './StatusMarker';
 
 const useStyles = makeStyles({
-  statusButton: {
-    maxWidth: "100px",
-    margin: "2px 0",
-    padding: "3px",
+  statusMarker: {
+    maxWidth: '100px',
+    margin: '2px 0',
+    padding: '3px',
+    position: 'relative',
+    top: '0',
+    right: '0',
   },
 });
 
@@ -34,79 +39,87 @@ const MaterialTableDemo = (props) => {
     }
   }, [getToysTable, toysTable]);
 
-  const [state, setState] = React.useState({
+  const [state] = React.useState({
     columns: [
       {
-        title: "Avatar",
-        field: "imageUrl",
-        render: (rowData) => (
-          <img
-            src={rowData.imageUrl}
-            alt=''
-            style={{ width: 40, borderRadius: "50%" }}
+        title: 'Avatar',
+        field: 'imageUrl',
+        editComponent: (imageProps) => {
+          console.log(imageProps);
+         return(
+         <TextField
+            label="Images"
+            multiline
+            rowsMax={4}
+            value={ typeof imageProps.value === "object" ? imageProps.value.join("\n") : imageProps.value}
+            onChange={(e) => imageProps.onChange(e.target.value)}
           />
+         )
+        },
+        render: (rowData) => (
+          <Link to={`/toypage/${rowData._id}`}>
+            <img
+              src={rowData.imageUrl[0]}
+              alt=""
+              style={{ width: 40, borderRadius: '50%' }}
+            />
+          </Link>
         ),
       },
       {
-        title: "Name",
-        field: "title",
+        title: 'Name',
+        field: 'title',
       },
       {
-        title: "Status",
-        field: "status",
+        title: 'Status',
+        field: 'status',
         editComponent: (props) => (
           <MultiplieSelect editComponentProps={props} />
         ),
         render: (rowData) => (
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             {rowData.status.map((OneRowData) => (
-              <Button
-                className={classes.statusButton}
-                variant='contained'
-                color='secondary'
-                key={Math.random()}
-              >
-                {OneRowData}
-              </Button>
+              <StatusMarker card={false} className={classes.statusMarker} key={Math.random()} status={OneRowData} />
             ))}
           </div>
         ),
       },
-      { title: "Description", field: "body" },
-      { title: "Price in $", field: "price", type: "numeric" },
+      { title: 'Description', field: 'body' },
+      { title: 'Price in $', field: 'price', type: 'numeric' },
       {
-        title: "Amounts",
-        field: "amounts",
-        type: "numeric",
+        title: 'Amounts',
+        field: 'amounts',
+        type: 'numeric',
       },
     ],
   });
   return (
     <MaterialTable
-      title='Editable Example'
+      title="Editable Example"
       options={{
-        cellStyle: { align: "center" },
-        headerStyle: { align: "center" },
+        actionsColumnIndex: -1,
+        cellStyle: { align: 'center' },
+        headerStyle: { align: 'center' },
       }}
       columns={state.columns}
       data={toysTable}
       editable={{
-        onRowAdd: (newData) =>
-          new Promise(async (resolve) => {
-            resolve();
-            await addToyTable(newData);
-          }),
-        onRowUpdate: (newData, oldData) =>
-          new Promise(async (resolve) => {
-            resolve();
-
-            await updateToyTable(newData);
-          }),
-        onRowDelete: (oldData) =>
-          new Promise(async (resolve) => {
-            resolve();
-            await deleteToyTable(oldData._id);
-          }),
+        onRowAdd: (newData) => new Promise(async (resolve) => {
+          resolve();
+          const newDataWithImageUrls = newData.imageUrl ? {...newData,imageUrl:newData.imageUrl?.split('\n')} : newData;
+          console.log(newDataWithImageUrls);
+          await addToyTable(newDataWithImageUrls)
+        }),
+        onRowUpdate: (newData) => new Promise(async (resolve) => {
+          resolve();
+          const newDataWithImageUrls = newData.imageUrl ? {...newData,imageUrl:newData.imageUrl?.split('\n')} : newData;
+          console.log(newDataWithImageUrls);
+          await updateToyTable(newDataWithImageUrls);
+        }),
+        onRowDelete: (oldData) => new Promise(async (resolve) => {
+          resolve();
+          await deleteToyTable(oldData._id);
+        }),
       }}
     />
   );
