@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import MaterialTable from 'material-table';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
+import { TextField } from '@material-ui/core';
 import {
   getToysTable,
   addToyTable,
@@ -42,12 +44,26 @@ const MaterialTableDemo = (props) => {
       {
         title: 'Avatar',
         field: 'imageUrl',
-        render: (rowData) => (
-          <img
-            src={rowData.imageUrl}
-            alt=""
-            style={{ width: 40, borderRadius: '50%' }}
+        editComponent: (imageProps) => {
+          console.log(imageProps);
+         return(
+         <TextField
+            label="Images"
+            multiline
+            rowsMax={4}
+            value={ typeof imageProps.value === "object" ? imageProps.value.join("\n") : imageProps.value}
+            onChange={(e) => imageProps.onChange(e.target.value)}
           />
+         )
+        },
+        render: (rowData) => (
+          <Link to={`/toypage/${rowData._id}`}>
+            <img
+              src={rowData.imageUrl[0]}
+              alt=""
+              style={{ width: 40, borderRadius: '50%' }}
+            />
+          </Link>
         ),
       },
       {
@@ -81,6 +97,7 @@ const MaterialTableDemo = (props) => {
     <MaterialTable
       title="Editable Example"
       options={{
+        actionsColumnIndex: -1,
         cellStyle: { align: 'center' },
         headerStyle: { align: 'center' },
       }}
@@ -89,12 +106,15 @@ const MaterialTableDemo = (props) => {
       editable={{
         onRowAdd: (newData) => new Promise(async (resolve) => {
           resolve();
-          await addToyTable(newData);
+          const newDataWithImageUrls = newData.imageUrl ? {...newData,imageUrl:newData.imageUrl?.split('\n')} : newData;
+          console.log(newDataWithImageUrls);
+          await addToyTable(newDataWithImageUrls)
         }),
         onRowUpdate: (newData) => new Promise(async (resolve) => {
           resolve();
-
-          await updateToyTable(newData);
+          const newDataWithImageUrls = newData.imageUrl ? {...newData,imageUrl:newData.imageUrl?.split('\n')} : newData;
+          console.log(newDataWithImageUrls);
+          await updateToyTable(newDataWithImageUrls);
         }),
         onRowDelete: (oldData) => new Promise(async (resolve) => {
           resolve();

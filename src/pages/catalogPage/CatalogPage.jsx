@@ -22,6 +22,7 @@ const CatalogPage = (props) => {
   useEffect(() => {
     getToys();
   }, [getToys]);
+
   return (
     (!isLoading) ? (
       <div className={classes.cardsContainer}>
@@ -31,10 +32,10 @@ const CatalogPage = (props) => {
               <CardComponent
                 id={toy._id}
                 title={toy.title}
-                imageURL={toy.imageUrl}
+                imageURL={toy.imageUrl[0]}
                 description={toy.body}
                 price={toy.price}
-                status="Top sales"
+                status={toy.status.includes('Sale') ? 'Sale' : toy.status.includes('Top sales') ? 'Top sales' : toy.status.includes('New') ? 'New' : ''}
               />
             </Grid>
           ))}

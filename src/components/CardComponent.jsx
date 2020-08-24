@@ -31,6 +31,10 @@ const useStyles = makeStyles({
     right: '0px',
     borderRadius: '0',
   },
+  cardText: {
+    overflow: 'hidden',
+    height: '60px',
+  },
 });
 
 function CardComponent(props) {
@@ -59,15 +63,19 @@ function CardComponent(props) {
             title="Contemplative Reptile"
           />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
+
+            <Typography className={classes.cardText} gutterBottom variant="h5" component="h2">
               {title}
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
+
+            <Typography className={classes.cardText} variant="body2" color="textSecondary" component="p">
               {description}
             </Typography>
+
           </CardContent>
         </CardActionArea>
         <CardActions className={classes.cardAction}>
+
           <Typography gutterBottom variant="h6" component="h2">
             {`${price}$`}
           </Typography>

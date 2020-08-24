@@ -36,7 +36,9 @@ export const getToy = (id) => async (dispatch) => {
   try {
     dispatch({ type: LOADING_SINGLE });
     const { data } = await axios.get(`http://localhost:3000/toypage/${id}`);
+
     dispatch({ type: LOADING_TOY_SUCCESS, payload: data });
+    return data;
   } catch (err) {
     console.log(err, LOADING_TOY_FAILED);
   }
