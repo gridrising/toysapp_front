@@ -5,6 +5,7 @@ import {
 import { connect } from 'react-redux';
 import CardComponent from '../../components/CardComponent';
 import { getToys } from '../../redux/action/actions';
+import MultipleSelect from '../../components/MultipleSelectFilterComponent';
 
 const useStyle = makeStyles(() => ({
   cards: {
@@ -22,25 +23,38 @@ const CatalogPage = (props) => {
   useEffect(() => {
     getToys();
   }, [getToys]);
-
+  const typeOfFilters = {
+    status: ['Top sales', 'New', 'Sale'],
+    price: ['10$-20$', '5$-10$'],
+  };
   return (
     (!isLoading) ? (
-      <div className={classes.cardsContainer}>
-        <Grid className={classes.cards} container justify="center" spacing={3}>
-          {toys.map((toy) => (
-            <Grid key={toy._id} item>
-              <CardComponent
-                id={toy._id}
-                title={toy.title}
-                imageURL={toy.imageUrl[0]}
-                description={toy.body}
-                price={toy.price}
-                status={toy.status.includes('Sale') ? 'Sale' : toy.status.includes('Top sales') ? 'Top sales' : toy.status.includes('New') ? 'New' : ''}
-              />
-            </Grid>
-          ))}
+      <Grid container>
+        <Grid item>
+          <Grid container>
+            <Grid item><MultipleSelect type="Status" filters={typeOfFilters.status} /></Grid>
+            <Grid item><MultipleSelect type="Price" filters={typeOfFilters.price} /></Grid>
+          </Grid>
         </Grid>
-      </div>
+        <Grid item>
+          <div className={classes.cardsContainer}>
+            <Grid className={classes.cards} container justify="center" spacing={3}>
+              {toys.map((toy) => (
+                <Grid key={toy._id} item>
+                  <CardComponent
+                    id={toy._id}
+                    title={toy.title}
+                    imageURL={toy.imageUrl[0]}
+                    description={toy.body}
+                    price={toy.price}
+                    status={toy.status.includes('Sale') ? 'Sale' : toy.status.includes('Top sales') ? 'Top sales' : toy.status.includes('New') ? 'New' : ''}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </div>
+        </Grid>
+      </Grid>
     ) : (<Container align="center"><CircularProgress /></Container>)
 
   );

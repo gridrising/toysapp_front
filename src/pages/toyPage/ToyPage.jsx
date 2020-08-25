@@ -56,16 +56,9 @@ const ToyPage = (props) => {
           <Grid container>
             <Grid item xl={7} lg={7} md={5} sm={12} xs={12}>
               <Box className={classes.imgContainer}>
-                {/* <CardMedia
-                  component="img"
-                  image={toy.imageUrl}
-                  title={toy.title}
-                  height="auto"
-                  maxWidth="100%"
-                /> */}
                 <Carousel autoPlay>
                   {toy.imageUrl?.map((oneImage) => (<img alt="" height="auto"
-                  maxWidth="100%" src={oneImage} key={Math.random()}/>))}
+                  maxwidth="100%" src={oneImage} key={Math.random()}/>))}
                 </Carousel>
               </Box>
             </Grid>

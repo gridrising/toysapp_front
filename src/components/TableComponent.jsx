@@ -10,7 +10,7 @@ import {
   deleteToyTable,
   updateToyTable,
 } from '../redux/action/actions';
-import MultiplieSelect from './MultipleSelectComponent';
+import MultiplieSelect from './MultipleSelectTableComponent';
 import StatusMarker from './StatusMarker';
 
 const useStyles = makeStyles({
@@ -45,7 +45,6 @@ const MaterialTableDemo = (props) => {
         title: 'Avatar',
         field: 'imageUrl',
         editComponent: (imageProps) => {
-          console.log(imageProps);
          return(
          <TextField
             label="Images"
@@ -106,14 +105,12 @@ const MaterialTableDemo = (props) => {
       editable={{
         onRowAdd: (newData) => new Promise(async (resolve) => {
           resolve();
-          const newDataWithImageUrls = newData.imageUrl ? {...newData,imageUrl:newData.imageUrl?.split('\n')} : newData;
-          console.log(newDataWithImageUrls);
+          const newDataWithImageUrls = typeof newData.imageUrl !== "object" ? {...newData,imageUrl:newData.imageUrl?.split('\n')} : newData;
           await addToyTable(newDataWithImageUrls)
         }),
         onRowUpdate: (newData) => new Promise(async (resolve) => {
           resolve();
-          const newDataWithImageUrls = newData.imageUrl ? {...newData,imageUrl:newData.imageUrl?.split('\n')} : newData;
-          console.log(newDataWithImageUrls);
+          const newDataWithImageUrls = typeof newData.imageUrl !== "object" ? {...newData,imageUrl:newData.imageUrl?.split('\n')} : newData;
           await updateToyTable(newDataWithImageUrls);
         }),
         onRowDelete: (oldData) => new Promise(async (resolve) => {
