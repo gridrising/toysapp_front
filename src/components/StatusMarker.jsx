@@ -5,15 +5,10 @@ const useStyles = makeStyles({
 
   statusButton: {
     maxWidth: '50px',
-    height: '40px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     margin: '5px 0',
-    position: 'absolute',
-    zIndex: '1000',
-    top: '10px',
-    right: '0px',
     borderRadius: '0',
     color: '#fff',
     padding: '4px 10px',
@@ -40,13 +35,23 @@ const useStyles = makeStyles({
     letterSpacing: '0.02857em',
     textTransform: 'uppercase',
   },
+  markersContainer: {
+    position: 'absolute',
+    zIndex: '1000',
+    top: '10px',
+    right: '0px',
+  },
 });
 const StatusMarker = (props) => {
   const { status, card } = props;
   const classes = useStyles();
   return (
-    <div className={card ? classes.statusButton : classes.statusMarker}>
-      {status}
+    <div className={classes.markersContainer}>
+      {status.map((oneStatus) => (
+        <div key={oneStatus} className={card ? classes.statusButton : classes.statusMarker}>
+          {oneStatus}
+        </div>
+      ))}
     </div>
   );
 };

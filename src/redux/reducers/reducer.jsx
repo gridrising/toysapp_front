@@ -20,6 +20,7 @@ import {
   CHECK_AUTH_FAILED,
   COMPARE_TOKEN,
   HIDE_LOGIN_ERROR,
+  CHANGE_FILTER,
 } from '../action-types';
 
 const initialState = {
@@ -36,6 +37,7 @@ const initialState = {
   loggedUser: null,
   loginError: null,
   tokenCompared: false,
+  currentFilters: {},
 };
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -148,6 +150,9 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         tokenCompared: true,
       };
+    }
+    case CHANGE_FILTER: {
+      return { ...state, currentFilters: { ...state.currentFilters, [action.payload.type]: action.payload.filter } };
     }
     default:
       return state;

@@ -21,6 +21,7 @@ import {
   CHECK_AUTH_FAILED,
   COMPARE_TOKEN,
   HIDE_LOGIN_ERROR,
+  CHANGE_FILTER,
 } from '../action-types';
 
 export const getToys = () => async (dispatch) => {
@@ -113,3 +114,14 @@ export const checkAuth = (token, id) => async (dispatch) => {
   }
 };
 export const compareToken = () => ({ type: COMPARE_TOKEN });
+
+export const changeFilter = (payload) => async (dispatch) => {
+  try {
+    dispatch({ type: LOADING });
+    dispatch({ type: CHANGE_FILTER, payload });
+    const { data } = await axios.get('http://localhost:3000/toys');
+    dispatch({ type: LOADING_TOYS_SUCCESS, payload: data });
+  } catch (error) {
+    console.log('something wrong', error);
+  }
+};

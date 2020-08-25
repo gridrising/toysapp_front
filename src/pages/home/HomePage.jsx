@@ -95,7 +95,7 @@ const HomePage = (props) => {
                 imageURL={toy.imageUrl[0]}
                 description={toy.body}
                 price={toy.price}
-                status="Top sales"
+                status={['Top sales']}
               />
             </Grid>
           ) : null))}
