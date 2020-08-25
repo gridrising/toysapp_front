@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -9,6 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import { Chip } from '@material-ui/core';
+import { changeFilter } from '../redux/action/actions';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -39,13 +40,14 @@ const MenuProps = {
   },
 };
 
-export default function MultipleSelect(props) {
-  const { type, filters } = props;
+function MultipleSelect(props) {
+  const { type, filters, changeFilter } = props;
   const classes = useStyles();
   const [currentFilters, setCurrentFilters] = React.useState([]);
 
   const handleChange = (event) => {
     setCurrentFilters(event.target.value);
+    changeFilter({ type, filter: event.target.value });
   };
 
   return (
@@ -81,3 +83,9 @@ export default function MultipleSelect(props) {
     </div>
   );
 }
+
+const mapDispatchToProps = {
+  changeFilter,
+};
+
+export default connect(null, mapDispatchToProps)(MultipleSelect);
