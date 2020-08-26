@@ -33,7 +33,7 @@ const CatalogPage = (props) => {
     const byStatusToys = toys.filter((toy) => currentFilters.Status?.some((oneFilter) => toy.status.includes(oneFilter)));
     const byPriceToys = toys.filter((toy) => {
       return currentFilters.Price?.some((oneFilter) => {
-        return (toy.price >= +oneFilter.split("-").[0]) && (toy.price <= +oneFilter.split("-").[1])
+        return (toy.price >= +oneFilter.split("-")?.[0]) && (toy.price <= +oneFilter.split("-")?.[1])
     })});
     const allFilters = [byStatusToys, byPriceToys];
     setFinalFilter(toys.filter((toy) => allFilters.every((oneFiltered) => oneFiltered.length ?oneFiltered.includes(toy): true)))

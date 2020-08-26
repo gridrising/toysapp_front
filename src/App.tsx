@@ -11,15 +11,21 @@ import RegisterPage from './pages/registerPage/RegisterPage';
 import LoginPage from './pages/loginPage/LoginPage';
 import { checkAuth, compareToken } from './redux/action/actions';
 import PrivateRoute from './components/privateRoute/PrivateRoute';
+import { State } from './types/types';
 
-function App(props) {
-  const {
-    isUserLogged, checkAuth, tokenCompared, compareToken,
-  } = props;
+type Props = {
+  isUserLogged: boolean;
+  checkAuth: (token: string | null, id: string) => void;
+  tokenCompared: boolean;
+  compareToken: () => void;
+};
+
+const App: React.FunctionComponent<Props> = (props: Props) => {
+  const { isUserLogged, checkAuth, tokenCompared, compareToken } = props;
   useEffect(() => {
     if (
-      localStorage.getItem('auth-token')
-      && localStorage.getItem('logged-user')
+      localStorage.getItem('auth-token') &&
+      localStorage.getItem('logged-user')
     ) {
       const token = localStorage.getItem('auth-token');
       const { _id } = JSON.parse(localStorage.getItem('logged-user') || '');
@@ -37,18 +43,25 @@ function App(props) {
             <Route path="/toypage/:id" component={ToyPage} />
             <Route exact path="/" component={HomePage} />
             <Route path="/catalog" component={CatalogPage} />
-            <PrivateRoute path="/table" auth={isUserLogged} component={TablePage} />
+            <PrivateRoute
+              path="/table"
+              auth={isUserLogged}
+              component={TablePage}
+            />
             <Route path="/register" component={RegisterPage} />
             <Route path="/login" component={LoginPage} />
           </Switch>
         </Router>
-      ) : <Container align="center"><CircularProgress /></Container>}
-
+      ) : (
+        <Container>
+          <CircularProgress />
+        </Container>
+      )}
     </div>
   );
-}
+};
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: State) => ({
   isUserLogged: state.isUserLogged,
   tokenCompared: state.tokenCompared,
 });
