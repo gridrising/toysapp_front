@@ -46,14 +46,6 @@ function CardComponent(props) {
     <Link to={`/toypage/${id}`} className={classes.cardLink}>
       <Card className={classes.root}>
         <CardActionArea>
-          {/* <Button
-            className={classes.statusButton}
-            variant="contained"
-            color="secondary"
-            size="small"
-          >
-            {`${status}`}
-          </Button> */}
           <StatusMarker card="true" status={status} />
           <CardMedia
             component="img"

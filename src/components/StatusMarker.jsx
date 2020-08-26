@@ -46,7 +46,7 @@ const StatusMarker = (props) => {
   const { status, card } = props;
   const classes = useStyles();
   return (
-    <div className={classes.markersContainer}>
+    <div className={card ? classes.markersContainer : ''}>
       {status.map((oneStatus) => (
         <div key={oneStatus} className={card ? classes.statusButton : classes.statusMarker}>
           {oneStatus}

@@ -3,7 +3,7 @@ import MaterialTable from 'material-table';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import { TextField } from '@material-ui/core';
+import { TextField, Box } from '@material-ui/core';
 import {
   getToysTable,
   addToyTable,
@@ -15,13 +15,17 @@ import StatusMarker from './StatusMarker';
 
 const useStyles = makeStyles({
   statusMarker: {
-    maxWidth: '100px',
-    margin: '2px 0',
-    padding: '3px',
+   
     position: 'relative',
     top: '0',
     right: '0',
   },
+  description:{
+    display: "-webkit-box",
+    lineClamp: "3",
+    boxOrient: "vertical",
+    overflow: "hidden",
+  }
 });
 
 const MaterialTableDemo = (props) => {
@@ -60,7 +64,7 @@ const MaterialTableDemo = (props) => {
             <img
               src={rowData.imageUrl[0]}
               alt=""
-              style={{ width: 40, borderRadius: '50%' }}
+              style={{ width: 55, borderRadius: '50%' }}
             />
           </Link>
         ),
@@ -76,14 +80,12 @@ const MaterialTableDemo = (props) => {
           <MultiplieSelect editComponentProps={props} />
         ),
         render: (rowData) => (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {rowData.status.map((OneRowData) => (
-              <StatusMarker card={false} className={classes.statusMarker} key={Math.random()} status={OneRowData} />
-            ))}
-          </div>
+          <StatusMarker card={false} status={rowData.status} />
+          
         ),
       },
-      { title: 'Description', field: 'body' },
+      { title: 'Description', field: 'body',
+      render:(rowData) => (<Box className={classes.description}>{rowData.body}</Box>), },
       { title: 'Price in $', field: 'price', type: 'numeric' },
       {
         title: 'Amounts',
