@@ -12,6 +12,7 @@ import LoginPage from './pages/loginPage/LoginPage';
 import { checkAuth, compareToken } from './redux/action/actions';
 import PrivateRoute from './components/privateRoute/PrivateRoute';
 import { State, DispatchType } from './types/types';
+import PaymentPage from './pages/paymentPage/PaymentPage';
 
 const useStyles = makeStyles({
   progressContainer: {
@@ -60,6 +61,7 @@ const App = (props: Props) => {
             />
             <Route path="/register" component={RegisterPage} />
             <Route path="/login" component={LoginPage} />
+            <Route path="/payment" component={PaymentPage} />
           </Switch>
         </Router>
       ) : (
