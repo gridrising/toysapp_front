@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { connect } from 'react-redux';
 import {
   Container,
@@ -10,6 +10,7 @@ import {
 import { Link, Redirect } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
 import { loginUser } from '../../redux/action/actions';
+import { State } from '../../types/types';
 
 const useStyle = makeStyles(() => ({
   formPositioning: {
@@ -27,26 +28,36 @@ const useStyle = makeStyles(() => ({
   },
 }));
 
-const LoginPage = (props) => {
+type Props = {
+  loginUser: (obj: { email: string; password: string }) => Promise<void>;
+  isUserLogged: boolean;
+  loginError: string;
+};
+
+const LoginPage = (props: Props) => {
   const { loginUser, isUserLogged, loginError } = props;
   const classes = useStyle();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     loginUser({ email, password });
     setEmail('');
     setPassword('');
   };
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.currentTarget.value);
   };
-  const handleChangePassword = (e) => {
-    setPassword(e.target.value);
+  const handleChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.currentTarget.value);
   };
-  return (!isUserLogged ? (
-    <Container m="auto">
-      <form onSubmit={handleSubmit} className={classes.formPositioning} autoComplete="off">
+  return !isUserLogged ? (
+    <Container>
+      <form
+        onSubmit={handleSubmit}
+        className={classes.formPositioning}
+        autoComplete="off"
+      >
         <Typography className={classes.formElement} variant="h2">
           Log in
         </Typography>
@@ -74,7 +85,9 @@ const LoginPage = (props) => {
           <Alert variant="outlined" severity="error">
             {loginError}
           </Alert>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
         <div>
           <Link to="/register" className={classes.Link}>
             <Button
@@ -97,14 +110,12 @@ const LoginPage = (props) => {
         </div>
       </form>
     </Container>
-  )
-    : (
-      <Redirect to="/" />
-    )
+  ) : (
+    <Redirect to="/" />
   );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: State) => ({
   isUserLogged: state.isUserLogged,
   loginError: state.loginError,
 });

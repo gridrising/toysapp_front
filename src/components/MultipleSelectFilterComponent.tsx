@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
@@ -40,14 +40,20 @@ const MenuProps = {
   },
 };
 
-function MultipleSelect(props) {
+type Props = {
+  type: string;
+  filters: string[];
+  changeFilter: (obj: { type: string; filter: string[] }) => Promise<void>;
+};
+
+function MultipleSelect(props: Props) {
   const { type, filters, changeFilter } = props;
   const classes = useStyles();
-  const [currentFilters, setCurrentFilters] = React.useState([]);
+  const [currentFilters, setCurrentFilters] = React.useState<string[]>([]);
 
-  const handleChange = (event) => {
-    setCurrentFilters(event.target.value);
-    changeFilter({ type, filter: event.target.value });
+  const handleChange = (e: ChangeEvent<{ value: unknown }>) => {
+    setCurrentFilters(e.currentTarget.value as string[]);
+    changeFilter({ type, filter: e.target.value as string[] });
   };
 
   return (
@@ -63,7 +69,7 @@ function MultipleSelect(props) {
           input={<Input />}
           renderValue={(selected) => (
             <div className={classes.chips}>
-              {selected.map((value) => (
+              {(selected as string[]).map((value) => (
                 <Chip key={value} label={value} className={classes.chip} />
               ))}
             </div>
@@ -72,9 +78,7 @@ function MultipleSelect(props) {
         >
           {filters.map((filter) => (
             <MenuItem key={filter} value={filter}>
-              <Checkbox
-                checked={currentFilters.indexOf(filter) > -1}
-              />
+              <Checkbox checked={currentFilters.indexOf(filter) > -1} />
               <ListItemText primary={filter} />
             </MenuItem>
           ))}

@@ -22,9 +22,39 @@ import {
   HIDE_LOGIN_ERROR,
   CHANGE_FILTER,
 } from '../action-types';
+import { DispatchType } from '../../types/types';
+
+export interface Toy {
+  _id: string;
+  title: string;
+  status: string[];
+  price: number;
+  amounts: number;
+  body: string;
+  imageUrl: string[];
+}
+
+export type Toys = Toy[];
+
+export interface InitialState {
+  toys: Toys;
+  isLoading: boolean;
+  isLoadingSingle: boolean;
+  isLoadingTable: boolean;
+  isLoadingUser: boolean;
+  errorMsg: boolean;
+  toy: {};
+  isRegistrationSucced: null | {};
+  registrationError: null | {};
+  isUserLogged: boolean | {};
+  loggedUser: null | {};
+  loginError: null | {};
+  tokenCompared: boolean;
+  currentFilters: {};
+}
 
 const initialState = {
-  toys: [],
+  toys: [] as Toys,
   isLoading: false,
   isLoadingSingle: false,
   isLoadingTable: false,
@@ -39,7 +69,10 @@ const initialState = {
   tokenCompared: false,
   currentFilters: {},
 };
-const rootReducer = (state = initialState, action) => {
+export const rootReducer = (
+  state: InitialState = initialState,
+  action: DispatchType
+) => {
   switch (action.type) {
     case LOADING:
       return { ...state, isLoading: true };
@@ -68,7 +101,9 @@ const rootReducer = (state = initialState, action) => {
     case UPDATE_TOY_TABLE: {
       return {
         ...state,
-        toys: state.toys.map((toy) => (toy._id === action.payload._id ? action.payload : toy)),
+        toys: state.toys.map((toy) =>
+          toy._id === action.payload._id ? action.payload : toy
+        ),
       };
     }
     case REGISTER_USER_SUCCESS: {
@@ -152,11 +187,15 @@ const rootReducer = (state = initialState, action) => {
       };
     }
     case CHANGE_FILTER: {
-      return { ...state, currentFilters: { ...state.currentFilters, [action.payload.type]: action.payload.filter } };
+      return {
+        ...state,
+        currentFilters: {
+          ...state.currentFilters,
+          [action.payload.type]: action.payload.filter,
+        },
+      };
     }
     default:
       return state;
   }
 };
-
-export default rootReducer;

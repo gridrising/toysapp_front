@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { CircularProgress, Container } from '@material-ui/core';
+import { CircularProgress, Container, makeStyles } from '@material-ui/core';
 import HomePage from './pages/home/HomePage';
 import CatalogPage from './pages/catalogPage/CatalogPage';
 import ToyPage from './pages/toyPage/ToyPage';
@@ -11,16 +11,26 @@ import RegisterPage from './pages/registerPage/RegisterPage';
 import LoginPage from './pages/loginPage/LoginPage';
 import { checkAuth, compareToken } from './redux/action/actions';
 import PrivateRoute from './components/privateRoute/PrivateRoute';
-import { State } from './types/types';
+import { State, DispatchType } from './types/types';
+
+const useStyles = makeStyles({
+  progressContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '500px',
+  },
+});
 
 type Props = {
   isUserLogged: boolean;
-  checkAuth: (token: string | null, id: string) => void;
+  checkAuth: (token: string | null, id: string) => Promise<void>;
   tokenCompared: boolean;
-  compareToken: () => void;
+  compareToken: () => DispatchType;
 };
 
-const App: React.FunctionComponent<Props> = (props: Props) => {
+const App = (props: Props) => {
+  const classes = useStyles();
   const { isUserLogged, checkAuth, tokenCompared, compareToken } = props;
   useEffect(() => {
     if (
@@ -38,7 +48,7 @@ const App: React.FunctionComponent<Props> = (props: Props) => {
     <div className="App">
       {tokenCompared ? (
         <Router>
-          <Navbar isUserLogged={isUserLogged} />
+          <Navbar />
           <Switch>
             <Route path="/toypage/:id" component={ToyPage} />
             <Route exact path="/" component={HomePage} />
@@ -53,7 +63,7 @@ const App: React.FunctionComponent<Props> = (props: Props) => {
           </Switch>
         </Router>
       ) : (
-        <Container>
+        <Container className={classes.progressContainer}>
           <CircularProgress />
         </Container>
       )}

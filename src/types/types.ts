@@ -2,31 +2,35 @@ export type State = {
   [key: string]: any;
 };
 
-import {
-  LOADING_TOY_SUCCESS,
-  LOADING_TOY_FAILED,
-  LOADING_TOYS_SUCCESS,
-  LOADING_TOYS_FAILED,
-  LOADING,
-  LOADING_SINGLE,
-  LOADING_TABLE,
-  ADD_TOY_TABLE,
-  DELETE_TOY_TABLE,
-  UPDATE_TOY_TABLE,
-  REGISTER_USER_FAILED,
-  REGISTER_USER_SUCCESS,
-  HIDE_REGISTRATION_MSG,
-  LOGGINING_BEGIN,
-  LOGGINING_SUCCESS,
-  LOGGINING_FAILED,
-  CHECK_AUTH_BEGIN,
-  CHECK_AUTH_SUCCESS,
-  CHECK_AUTH_FAILED,
-  COMPARE_TOKEN,
-  HIDE_LOGIN_ERROR,
-  CHANGE_FILTER,
-} from '../redux/action-types';
+export interface DispatchType {
+  type: string;
+  [key: string]: any;
+}
+export interface Toy {
+  _id: string;
+  title: string;
+  status: string[];
+  price: number;
+  amounts: number;
+  body: string;
+  imageUrl: string[];
+}
 
-interface IGetToysAction = {
-    type:
+export type Toys = Toy[];
+
+export interface InitialState {
+  toys: Toy;
+  isLoading: boolean;
+  isLoadingSingle: boolean;
+  isLoadingTable: boolean;
+  isLoadingUser: boolean;
+  errorMsg: boolean;
+  toy: {};
+  isRegistrationSucced: null | {};
+  registrationError: null | {};
+  isUserLogged: boolean | {};
+  loggedUser: null | {};
+  loginError: null | {};
+  tokenCompared: boolean;
+  currentFilters: {};
 }

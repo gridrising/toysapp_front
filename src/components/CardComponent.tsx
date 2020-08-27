@@ -26,7 +26,6 @@ const useStyles = makeStyles({
     maxWidth: '50px',
     margin: '5px 0',
     position: 'absolute',
-    zIndex: '1000',
     top: '10px',
     right: '0px',
     borderRadius: '0',
@@ -37,16 +36,23 @@ const useStyles = makeStyles({
   },
 });
 
-function CardComponent(props) {
+type Props = {
+  id: string;
+  title: string;
+  imageURL: string;
+  description: string;
+  price: Number;
+  status: string[];
+};
+
+function CardComponent(props: Props) {
   const classes = useStyles();
-  const {
-    id, title, imageURL, description, price, status,
-  } = props;
+  const { id, title, imageURL, description, price, status } = props;
   return (
     <Link to={`/toypage/${id}`} className={classes.cardLink}>
       <Card className={classes.root}>
         <CardActionArea>
-          <StatusMarker card="true" status={status} />
+          <StatusMarker card={true} status={status} />
           <CardMedia
             component="img"
             alt="Contemplative Reptile"
@@ -55,19 +61,26 @@ function CardComponent(props) {
             title="Contemplative Reptile"
           />
           <CardContent>
-
-            <Typography className={classes.cardText} gutterBottom variant="h5" component="h2">
+            <Typography
+              className={classes.cardText}
+              gutterBottom
+              variant="h5"
+              component="h2"
+            >
               {title}
             </Typography>
 
-            <Typography className={classes.cardText} variant="body2" color="textSecondary" component="p">
+            <Typography
+              className={classes.cardText}
+              variant="body2"
+              color="textSecondary"
+              component="p"
+            >
               {description}
             </Typography>
-
           </CardContent>
         </CardActionArea>
         <CardActions className={classes.cardAction}>
-
           <Typography gutterBottom variant="h6" component="h2">
             {`${price}$`}
           </Typography>

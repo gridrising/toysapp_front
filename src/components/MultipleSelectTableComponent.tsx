@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
@@ -40,12 +40,16 @@ const MenuProps = {
 
 const names = ['Top sales', 'New', 'Sale'];
 
-export default function MultipleSelect(props) {
+type Props = {
+  editComponentProps: { [key: string]: any };
+};
+
+export default function MultipleSelect(props: Props) {
   const classes = useStyles();
   const onChangeEdit = props.editComponentProps.onChange;
   const valueEdit = props.editComponentProps.value;
-  const handleChange = (event) => {
-    onChangeEdit(event.target.value);
+  const handleChange = (e: ChangeEvent<{ value: unknown }>) => {
+    onChangeEdit(e.currentTarget.value as string[]);
   };
 
   return (
@@ -59,7 +63,7 @@ export default function MultipleSelect(props) {
           value={valueEdit || []}
           onChange={handleChange}
           input={<Input />}
-          renderValue={(selected) => selected.join(', ')}
+          renderValue={(selected) => (selected as string[]).join(', ')}
           MenuProps={MenuProps}
         >
           {names.map((name) => (
