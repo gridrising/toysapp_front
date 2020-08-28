@@ -21,9 +21,11 @@ import {
   COMPARE_TOKEN,
   HIDE_LOGIN_ERROR,
   CHANGE_FILTER,
+  ADD_TO_BAG,
+  GET_BAG_SUCCESS,
+  GET_BAG_BEGIN,
 } from '../action-types';
 import { DispatchType } from '../../types/types';
-
 export interface Toy {
   _id: string;
   title: string;
@@ -51,6 +53,7 @@ export interface InitialState {
   loginError: null | {};
   tokenCompared: boolean;
   currentFilters: {};
+  purchases: Toys;
 }
 
 const initialState = {
@@ -68,6 +71,7 @@ const initialState = {
   loginError: null,
   tokenCompared: false,
   currentFilters: {},
+  purchases: [] as Toys,
 };
 export const rootReducer = (
   state: InitialState = initialState,
@@ -193,6 +197,54 @@ export const rootReducer = (
           ...state.currentFilters,
           [action.payload.type]: action.payload.filter,
         },
+      };
+    }
+    case ADD_TO_BAG: {
+      let isUnique = true;
+      const uniquePurchases = state.purchases.map((purchase) => {
+        if (purchase._id === action.payload.data._id) {
+          isUnique = false;
+          return {
+            ...purchase,
+            amounts: action.payload.amount + purchase.amounts,
+          };
+        } else {
+          return { ...purchase };
+        }
+      });
+      return isUnique
+        ? {
+            ...state,
+            purchases: [
+              ...state.purchases,
+              { ...action.payload.data, amounts: action.payload.amount },
+            ],
+          }
+        : {
+            ...state,
+            purchases: [...uniquePurchases],
+          };
+    }
+    case GET_BAG_BEGIN: {
+      return {
+        ...state,
+        isLoadingUser: true,
+      };
+    }
+    case GET_BAG_SUCCESS: {
+      const purchasesWithAmount = action.payload.data.map((oneProduct: Toy) => {
+        oneProduct.amounts = 0;
+        action.payload.idsAndAmounts.forEach((element: any) => {
+          if (oneProduct._id === element.id) {
+            oneProduct.amounts += element.amount;
+          }
+        });
+        return oneProduct;
+      });
+      return {
+        ...state,
+        isLoadingUser: false,
+        purchases: purchasesWithAmount,
       };
     }
     default:

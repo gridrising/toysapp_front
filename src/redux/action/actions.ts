@@ -22,6 +22,9 @@ import {
   COMPARE_TOKEN,
   HIDE_LOGIN_ERROR,
   CHANGE_FILTER,
+  ADD_TO_BAG,
+  GET_BAG_BEGIN,
+  GET_BAG_SUCCESS,
 } from '../action-types';
 import { DispatchType, Toy } from '../../types/types';
 
@@ -148,6 +151,33 @@ export const changeFilter = (payload: object) => async (
     dispatch({ type: CHANGE_FILTER, payload });
     const { data } = await axios.get('http://localhost:3000/toys');
     dispatch({ type: LOADING_TOYS_SUCCESS, payload: data });
+  } catch (error) {
+    console.log('something wrong', error);
+  }
+};
+export const addToBag = (id: string, amount: number) => async (
+  dispatch: (obj: DispatchType) => Promise<any>
+) => {
+  try {
+    if (localStorage.getItem('bag')) {
+      const prevBag = JSON.parse(localStorage.getItem('bag') || '');
+      localStorage.setItem('bag', JSON.stringify([...prevBag, { id, amount }]));
+    } else {
+      localStorage.setItem('bag', JSON.stringify([{ id, amount }]));
+    }
+    const { data } = await axios.post('http://localhost:3000/addToBag', { id });
+    dispatch({ type: ADD_TO_BAG, payload: { data, amount } });
+  } catch (error) {
+    console.log('something wrong', error);
+  }
+};
+export const getBag = (ids: string[], idsAndAmounts: any[]) => async (
+  dispatch: (obj: DispatchType) => Promise<any>
+) => {
+  try {
+    dispatch({ type: GET_BAG_BEGIN });
+    const { data } = await axios.post('http://localhost:3000/bag', ids);
+    dispatch({ type: GET_BAG_SUCCESS, payload: { data, idsAndAmounts } });
   } catch (error) {
     console.log('something wrong', error);
   }

@@ -9,10 +9,11 @@ import Navbar from './components/Navbar';
 import TablePage from './pages/tablePage/TablePage';
 import RegisterPage from './pages/registerPage/RegisterPage';
 import LoginPage from './pages/loginPage/LoginPage';
-import { checkAuth, compareToken } from './redux/action/actions';
+import { checkAuth, compareToken, getBag } from './redux/action/actions';
 import PrivateRoute from './components/privateRoute/PrivateRoute';
-import { State, DispatchType } from './types/types';
+import { State, DispatchType, Toy } from './types/types';
 import PaymentPage from './pages/paymentPage/PaymentPage';
+import PurchasesBagPage from './pages/purchasesBagPage/PurchasesBagPage';
 
 const useStyles = makeStyles({
   progressContainer: {
@@ -28,11 +29,20 @@ type Props = {
   checkAuth: (token: string | null, id: string) => Promise<void>;
   tokenCompared: boolean;
   compareToken: () => DispatchType;
+  purchases: Toy[];
+  getBag: (array1: string[], array2: any[]) => Promise<void>;
 };
 
 const App = (props: Props) => {
   const classes = useStyles();
-  const { isUserLogged, checkAuth, tokenCompared, compareToken } = props;
+  const {
+    isUserLogged,
+    checkAuth,
+    tokenCompared,
+    compareToken,
+    getBag,
+    purchases,
+  } = props;
   useEffect(() => {
     if (
       localStorage.getItem('auth-token') &&
@@ -45,6 +55,15 @@ const App = (props: Props) => {
       compareToken();
     }
   }, [isUserLogged, checkAuth, compareToken]);
+  useEffect(() => {
+    if (localStorage.getItem('bag')) {
+      const localPurchases = JSON.parse(localStorage.getItem('bag') || '');
+      const idsLocalPurchases = localPurchases.map(
+        (localPurchase: any) => localPurchase.id
+      );
+      getBag(idsLocalPurchases, localPurchases);
+    }
+  }, []);
   return (
     <div className="App">
       {tokenCompared ? (
@@ -61,6 +80,7 @@ const App = (props: Props) => {
             />
             <Route path="/register" component={RegisterPage} />
             <Route path="/login" component={LoginPage} />
+            <Route path="/my-bag" component={PurchasesBagPage} />
             <Route path="/payment" component={PaymentPage} />
           </Switch>
         </Router>
@@ -76,11 +96,13 @@ const App = (props: Props) => {
 const mapStateToProps = (state: State) => ({
   isUserLogged: state.isUserLogged,
   tokenCompared: state.tokenCompared,
+  purchases: state.purchases,
 });
 
 const mapDispatchToProps = {
   checkAuth,
   compareToken,
+  getBag,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

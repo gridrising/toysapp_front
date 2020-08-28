@@ -11,6 +11,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { checkAuth } from '../redux/action/actions';
 import { State } from '../types/types';
+import ShoppingBadge from './ShoppingBadge';
 
 const useStyle = makeStyles(() => ({
   Link: {
@@ -42,6 +43,9 @@ const Navbar = (props: Props) => {
             justify="flex-end"
             alignItems="center"
           >
+            <NavLink to="/my-bag" className={classes.Link}>
+              <ShoppingBadge />
+            </NavLink>
             <Button variant="text">
               <NavLink to="/" className={classes.Link}>
                 Home

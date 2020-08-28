@@ -1,4 +1,4 @@
-import React, { useEffect, FormEvent } from 'react';
+import React, { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
 import {
   Box,
   makeStyles,
@@ -11,10 +11,10 @@ import {
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import { getToy } from '../../redux/action/actions';
+import { getToy, addToBag } from '../../redux/action/actions';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Toy } from '../../redux/reducers/reducer';
-import { State } from '../../types/types';
+import { State, DispatchType } from '../../types/types';
 
 const useStyle = makeStyles({
   imgContainer: {
@@ -41,6 +41,7 @@ type Props = {
   toy: Toy;
   isLoadingSingle: boolean;
   getToy: (id: string) => Promise<void>;
+  addToBag: (id: string, amount: number) => Promise<void>;
   match: {
     params: {
       id: string;
@@ -49,15 +50,19 @@ type Props = {
 };
 
 const ToyPage = (props: Props) => {
-  const { toy, isLoadingSingle, getToy, match } = props;
+  const { toy, isLoadingSingle, getToy, match, addToBag } = props;
+  const [amount, setAmount] = useState(1);
   const classes = useStyle();
 
   useEffect(() => {
     getToy(match.params.id);
   }, [getToy, match.params.id]);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setAmount(parseInt(e.currentTarget.value, 10));
+  };
+  const handleClick = () => {
+    addToBag(toy._id, amount);
   };
 
   if (isLoadingSingle) {
@@ -122,39 +127,38 @@ const ToyPage = (props: Props) => {
                 Vestibulum in congue lacus.
               </Typography>
 
-              <form action="submit" onSubmit={handleSubmit}>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  width="500px"
-                  mb={20}
-                  className={classes.buyComponents}
-                >
-                  <Typography variant="h6" component="h2">
-                    Quantity
-                  </Typography>
-                  <TextField
-                    type="Number"
-                    defaultValue="1"
-                    inputProps={{ min: '1', max: `${toy.amounts}`, size: '2' }}
-                  />
-                </Box>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  size="large"
-                  color="primary"
-                  className={classes.buyComponents}
-                >
-                  Add to bag
-                </Button>
-                <Typography
-                  variant="h6"
-                  component="h2"
-                  className={classes.buyComponents}
-                >{`${toy.amounts} in stock`}</Typography>
-              </form>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                width="500px"
+                mb={20}
+                className={classes.buyComponents}
+              >
+                <Typography variant="h6" component="h2">
+                  Quantity
+                </Typography>
+                <TextField
+                  type="Number"
+                  value={amount}
+                  inputProps={{ min: '1', max: `${toy.amounts}`, size: '2' }}
+                  onChange={handleChange}
+                />
+              </Box>
+              <Button
+                variant="contained"
+                size="large"
+                color="primary"
+                className={classes.buyComponents}
+                onClick={handleClick}
+              >
+                Add to bag
+              </Button>
+              <Typography
+                variant="h6"
+                component="h2"
+                className={classes.buyComponents}
+              >{`${toy.amounts} in stock`}</Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -171,5 +175,6 @@ const mapStateToProps = (state: State) => ({
 });
 const mapDispatchToProps = {
   getToy,
+  addToBag,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ToyPage);

@@ -30,6 +30,14 @@
     "redux-thunk": "^2.3.0",
     "typescript": "^4.0.2"
   },
+  "peerDependencies": {
+    "typescript": "4.0.2"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

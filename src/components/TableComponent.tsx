@@ -57,6 +57,7 @@ const MaterialTableDemo = (props: Props) => {
       {
         title: 'Avatar',
         field: 'imageUrl',
+        align: 'center',
         editComponent: (imageProps: any) => {
           return (
             <TextField
