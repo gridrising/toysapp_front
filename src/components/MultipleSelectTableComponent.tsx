@@ -49,7 +49,7 @@ export default function MultipleSelect(props: Props) {
   const onChangeEdit = props.editComponentProps.onChange;
   const valueEdit = props.editComponentProps.value;
   const handleChange = (e: ChangeEvent<{ value: unknown }>) => {
-    onChangeEdit(e.currentTarget.value as string[]);
+    onChangeEdit(e.target.value as string[]);
   };
 
   return (

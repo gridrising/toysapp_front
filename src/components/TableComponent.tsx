@@ -126,7 +126,8 @@ const MaterialTableDemo = (props: Props) => {
           headerStyle: CSSProperties;
         }
       }
-      columns={state.columns as Column<Toy>[]}
+      columns={state.columns as
+      }
       data={toysTable}
       editable={{
         onRowAdd: (newData: { [key: string]: any }) =>

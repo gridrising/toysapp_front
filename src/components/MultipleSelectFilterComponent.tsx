@@ -52,7 +52,7 @@ function MultipleSelect(props: Props) {
   const [currentFilters, setCurrentFilters] = React.useState<string[]>([]);
 
   const handleChange = (e: ChangeEvent<{ value: unknown }>) => {
-    setCurrentFilters(e.currentTarget.value as string[]);
+    setCurrentFilters(e.target.value as string[]);
     changeFilter({ type, filter: e.target.value as string[] });
   };
 

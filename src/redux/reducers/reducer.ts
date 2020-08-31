@@ -24,8 +24,10 @@ import {
   ADD_TO_BAG,
   GET_BAG_SUCCESS,
   GET_BAG_BEGIN,
+  REMOVE_PURCHASE,
 } from '../action-types';
 import { DispatchType } from '../../types/types';
+
 export interface Toy {
   _id: string;
   title: string;
@@ -245,6 +247,19 @@ export const rootReducer = (
         ...state,
         isLoadingUser: false,
         purchases: purchasesWithAmount,
+      };
+    }
+    case REMOVE_PURCHASE: {
+      const oldLocalPurchases = JSON.parse(localStorage.getItem('bag') || '');
+      const newLocalPurchases = oldLocalPurchases?.filter(
+        (purchase: any) => purchase.id != action.payload
+      );
+      localStorage.setItem('bag', JSON.stringify(newLocalPurchases));
+      return {
+        ...state,
+        purchases: state.purchases.filter(
+          (purchase: Toy) => purchase._id != action.payload
+        ),
       };
     }
     default:

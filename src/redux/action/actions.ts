@@ -25,6 +25,7 @@ import {
   ADD_TO_BAG,
   GET_BAG_BEGIN,
   GET_BAG_SUCCESS,
+  REMOVE_PURCHASE,
 } from '../action-types';
 import { DispatchType, Toy } from '../../types/types';
 
@@ -182,3 +183,7 @@ export const getBag = (ids: string[], idsAndAmounts: any[]) => async (
     console.log('something wrong', error);
   }
 };
+export const removePurchase = (id: string): DispatchType => ({
+  type: REMOVE_PURCHASE,
+  payload: id,
+});

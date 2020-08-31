@@ -3,10 +3,19 @@ import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 
 import CardSection from './cardSection/CardSection';
 import { StripeCardElement, StripeCardNumberElement } from '@stripe/stripe-js';
+import { connect } from 'react-redux';
+import { State } from '../types/types';
+import { Toy } from '../redux/reducers/reducer';
+import axios from 'axios';
+import { Button } from '@material-ui/core';
 
-type Props = {};
+type Props = {
+  purchases: Toy[];
+};
 
-export default function CheckoutForm() {
+function CheckoutForm(props: Props) {
+  const { purchases } = props;
+
   const stripe = useStripe();
   const elements = useElements();
 
@@ -15,23 +24,27 @@ export default function CheckoutForm() {
     // which would refresh the page.
     e.preventDefault();
 
+    const fullPrice = purchases
+      .reduce((price, purchase) => price + purchase.price * purchase.amounts, 0)
+      .toFixed(2);
+
     if (!stripe || !elements) {
       // Stripe.js has not yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
-    const response = await fetch('http://localhost:3000/secret');
-    const { client_secret: clientSecret } = await response.json();
+    const response = await axios.post('http://localhost:3000/secret', {
+      fullPrice,
+    });
 
-    const result: any = await stripe.confirmCardPayment(`${clientSecret}`, {
+    const { client_secret: client_secret } = response.data;
+
+    const result: any = await stripe.confirmCardPayment(`${client_secret}`, {
       payment_method: {
         card: elements.getElement(CardElement) as
           | StripeCardElement
           | StripeCardNumberElement
           | { token: string },
-        billing_details: {
-          name: 'Jenny Rosen',
-        },
       },
     });
 
@@ -55,7 +68,20 @@ export default function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit}>
       <CardSection />
-      <button disabled={!stripe}>Confirm order</button>
+      <Button
+        type="submit"
+        disabled={!stripe}
+        variant="contained"
+        color="primary"
+      >
+        Confirm
+      </Button>
     </form>
   );
 }
+
+const mapStateToProps = (state: State) => ({
+  purchases: state.purchases,
+});
+
+export default connect(mapStateToProps)(CheckoutForm);

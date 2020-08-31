@@ -4,6 +4,7 @@
 import React from 'react';
 import { CardElement } from '@stripe/react-stripe-js';
 import './CardSectionStyles.css';
+import { Typography, Box } from '@material-ui/core';
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
@@ -26,8 +27,12 @@ const CARD_ELEMENT_OPTIONS = {
 function CardSection() {
   return (
     <label>
-      Card details
-      <CardElement options={CARD_ELEMENT_OPTIONS} />
+      <Typography variant="h6" paragraph>
+        Card details
+      </Typography>
+      <Box m="15px 0" maxWidth="500px">
+        <CardElement options={CARD_ELEMENT_OPTIONS} />
+      </Box>
     </label>
   );
 }
