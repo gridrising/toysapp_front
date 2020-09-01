@@ -59,18 +59,26 @@ const MaterialTableDemo = (props: Props) => {
         field: 'imageUrl',
         align: 'center',
         editComponent: (imageProps: any) => {
+          console.log(imageProps);
           return (
-            <TextField
-              label="Images"
-              multiline
-              rowsMax={4}
-              value={
-                typeof imageProps.value === 'object'
-                  ? imageProps.value.join('\n')
-                  : imageProps.value
-              }
-              onChange={(e) => imageProps.onChange(e.target.value)}
-            />
+            <input
+              type="file"
+              name="image"
+              multiple
+              accept=".jpg, .jpeg, .png"
+              onChange={(e) => imageProps.onChange(e.target.files)}
+            ></input>
+            // <TextField
+            //   label="Images"
+            //   multiline
+            //   rowsMax={4}
+            //   value={
+            //     typeof imageProps.value === 'object'
+            //       ? imageProps.value.join('\n')
+            //       : imageProps.value
+            //   }
+            //   onChange={(e) => imageProps.onChange(e.target.value)}
+            // />
           );
         },
         render: (rowData: any) => (
@@ -126,18 +134,19 @@ const MaterialTableDemo = (props: Props) => {
           headerStyle: CSSProperties;
         }
       }
-      columns={state.columns as
-      }
+      columns={state.columns as Column<Toy>[]}
       data={toysTable}
       editable={{
         onRowAdd: (newData: { [key: string]: any }) =>
           new Promise(async (resolve) => {
             resolve();
-            const newDataWithImageUrls =
-              typeof newData.imageUrl !== 'object'
-                ? { ...newData, imageUrl: newData.imageUrl?.split('\n') }
-                : newData;
-            await addToyTable(newDataWithImageUrls);
+            const formData = new FormData();
+            if (newData.imageUrl) {
+              [...newData.imageUrl].forEach((element: File) => {
+                formData.append('image', element);
+              });
+            }
+            await addToyTable({ ...newData, imageUrl: formData });
           }),
         onRowUpdate: (newData: { [key: string]: any }) =>
           new Promise(async (resolve) => {

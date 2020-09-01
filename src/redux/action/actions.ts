@@ -68,8 +68,17 @@ export const addToyTable = (payload: { [key: string]: any }) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
+    const res1 = await axios.post(
+      'http://localhost:3000/uploadfile',
+      payload.imageUrl
+    );
+    console.log(res1.data);
     const { data } = await axios.post('http://localhost:3000/table', payload);
-    const datatWithId = { ...payload, _id: data._id };
+    const datatWithId = {
+      ...payload,
+      _id: data._id,
+      imageUrl: res1.data.images,
+    };
     dispatch({ type: ADD_TOY_TABLE, payload: datatWithId });
   } catch (error) {
     console.log(error);

@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 
 import CardSection from './cardSection/CardSection';
@@ -8,6 +8,8 @@ import { State } from '../types/types';
 import { Toy } from '../redux/reducers/reducer';
 import axios from 'axios';
 import { Button } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import { Redirect } from 'react-router-dom';
 
 type Props = {
   purchases: Toy[];
@@ -15,6 +17,8 @@ type Props = {
 
 function CheckoutForm(props: Props) {
   const { purchases } = props;
+  const [isSucceeded, setIsSucceeded] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -49,7 +53,10 @@ function CheckoutForm(props: Props) {
     });
 
     if (result.error) {
-      // Show error to your customer (e.g., insufficient funds)
+      setErrorMsg(result.error.message);
+      setTimeout(() => {
+        setErrorMsg(null);
+      }, 5000);
       console.log(result.error.message);
     } else {
       // The payment has been processed!
@@ -59,6 +66,11 @@ function CheckoutForm(props: Props) {
         // execution. Set up a webhook or plugin to listen for the
         // payment_intent.succeeded event that handles any business critical
         // post-payment actions.
+        setIsSucceeded(true);
+        setTimeout(() => {
+          setIsSucceeded(false);
+        }, 5000);
+        console.log('Succeeded');
       } else {
         console.log('undefined');
       }
@@ -67,6 +79,8 @@ function CheckoutForm(props: Props) {
 
   return (
     <form onSubmit={handleSubmit}>
+      {errorMsg ? <Alert severity="error">{errorMsg}</Alert> : null}
+      {isSucceeded ? <Alert>Payment succeeded</Alert> : null}
       <CardSection />
       <Button
         type="submit"
