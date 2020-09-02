@@ -11,6 +11,10 @@ const useStyles = makeStyles(() => ({
   checkoutButton: {
     margin: '10px 0',
   },
+  Link: {
+    textDecoration: 'none',
+    color: 'white',
+  },
 }));
 
 type Props = {
@@ -35,7 +39,7 @@ const CheckoutComponent = (props: Props) => {
             <Typography variant="h6">{`$${fullPrice}`}</Typography>
           </Box>
         </Box>
-        <Link to="/payment">
+        <Link className={classes.Link} to="/payment">
           <Button
             className={classes.checkoutButton}
             variant="contained"

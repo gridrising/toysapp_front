@@ -202,30 +202,10 @@ export const rootReducer = (
       };
     }
     case ADD_TO_BAG: {
-      let isUnique = true;
-      const uniquePurchases = state.purchases.map((purchase) => {
-        if (purchase._id === action.payload.data._id) {
-          isUnique = false;
-          return {
-            ...purchase,
-            amounts: action.payload.amount + purchase.amounts,
-          };
-        } else {
-          return { ...purchase };
-        }
-      });
-      return isUnique
-        ? {
-            ...state,
-            purchases: [
-              ...state.purchases,
-              { ...action.payload.data, amounts: action.payload.amount },
-            ],
-          }
-        : {
-            ...state,
-            purchases: [...uniquePurchases],
-          };
+      return {
+        ...state,
+        purchases: [...state.purchases, action.payload],
+      };
     }
     case GET_BAG_BEGIN: {
       return {

@@ -59,7 +59,6 @@ const MaterialTableDemo = (props: Props) => {
         field: 'imageUrl',
         align: 'center',
         editComponent: (imageProps: any) => {
-          console.log(imageProps);
           return (
             <input
               type="file"
@@ -139,7 +138,6 @@ const MaterialTableDemo = (props: Props) => {
       editable={{
         onRowAdd: (newData: { [key: string]: any }) =>
           new Promise(async (resolve) => {
-            resolve();
             const formData = new FormData();
             if (newData.imageUrl) {
               [...newData.imageUrl].forEach((element: File) => {
@@ -147,20 +145,23 @@ const MaterialTableDemo = (props: Props) => {
               });
             }
             await addToyTable({ ...newData, imageUrl: formData });
+            resolve();
           }),
         onRowUpdate: (newData: { [key: string]: any }) =>
           new Promise(async (resolve) => {
+            const formData = new FormData();
+            if (newData.imageUrl) {
+              [...newData.imageUrl].forEach((element: File) => {
+                formData.append('image', element);
+              });
+            }
+            await updateToyTable({ ...newData, imageUrl: formData });
             resolve();
-            const newDataWithImageUrls =
-              typeof newData.imageUrl !== 'object'
-                ? { ...newData, imageUrl: newData.imageUrl?.split('\n') }
-                : newData;
-            await updateToyTable(newDataWithImageUrls);
           }),
         onRowDelete: (oldData) =>
           new Promise(async (resolve) => {
-            resolve();
             await deleteToyTable(oldData._id);
+            resolve();
           }),
       }}
     />

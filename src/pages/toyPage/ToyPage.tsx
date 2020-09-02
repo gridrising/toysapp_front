@@ -50,15 +50,25 @@ type Props = {
   isLoadingSingle: boolean;
   getToy: (id: string) => Promise<void>;
   addToBag: (id: string, amount: number) => Promise<void>;
+  updateBag: (id: string, amount: number) => Promise<void>;
   match: {
     params: {
       id: string;
     };
   };
+  purchases: Toy[];
 };
 
 const ToyPage = (props: Props) => {
-  const { toy, isLoadingSingle, getToy, match, addToBag } = props;
+  const {
+    toy,
+    isLoadingSingle,
+    getToy,
+    match,
+    purchases,
+    addToBag,
+    updateBag,
+  } = props;
   const [amount, setAmount] = useState(1);
   const classes = useStyle();
 
@@ -67,10 +77,19 @@ const ToyPage = (props: Props) => {
   }, [getToy, match.params.id]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAmount(parseInt(e.currentTarget.value, 10));
+    if (parseInt(e.currentTarget.value, 10) >= toy.amounts) {
+      setAmount(toy.amounts);
+    } else {
+      setAmount(parseInt(e.currentTarget.value, 10));
+    }
   };
   const handleClick = () => {
-    addToBag(toy._id, amount);
+    console.log(purchases, toy);
+    if (!purchases.find((purchase: Toy) => purchase._id === toy._id)) {
+      addToBag(toy._id, amount);
+    } else {
+      updateBag(toy._id, amount);
+    }
   };
 
   if (isLoadingSingle) {
@@ -187,9 +206,11 @@ const ToyPage = (props: Props) => {
 const mapStateToProps = (state: State) => ({
   toy: state.toy,
   isLoadingSingle: state.isLoadingSingle,
+  purchases: state.purchases,
 });
 const mapDispatchToProps = {
   getToy,
   addToBag,
+  updateBag,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ToyPage);

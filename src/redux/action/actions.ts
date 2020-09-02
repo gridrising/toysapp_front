@@ -68,16 +68,19 @@ export const addToyTable = (payload: { [key: string]: any }) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    const res1 = await axios.post(
+    const images = await axios.post(
       'http://localhost:3000/uploadfile',
       payload.imageUrl
     );
-    console.log(res1.data);
-    const { data } = await axios.post('http://localhost:3000/table', payload);
+    console.log(images.data);
+    const { data } = await axios.post('http://localhost:3000/table', {
+      ...payload,
+      imageUrl: images.data,
+    });
     const datatWithId = {
       ...payload,
       _id: data._id,
-      imageUrl: res1.data.images,
+      imageUrl: images.data,
     };
     dispatch({ type: ADD_TOY_TABLE, payload: datatWithId });
   } catch (error) {
@@ -99,8 +102,22 @@ export const updateToyTable = (payload: { [key: string]: any }) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    await axios.patch(`http://localhost:3000/table/${payload._id}`, payload);
-    dispatch({ type: UPDATE_TOY_TABLE, payload });
+    const images = await axios.post(
+      'http://localhost:3000/uploadfile',
+      payload.imageUrl
+    );
+    console.log(images.data);
+    await axios.patch(`http://localhost:3000/table/${payload._id}`, {
+      payload,
+      imageUrl: images.data,
+    });
+    dispatch({
+      type: UPDATE_TOY_TABLE,
+      payload: {
+        ...payload,
+        imageUrl: images.data,
+      },
+    });
   } catch (error) {
     console.log(error);
   }
@@ -142,13 +159,14 @@ export const checkAuth = (token: string | null, id: string) => async (
       token,
       id,
     });
-    if (response.data === 'auth error') {
+    if (response.data === 'auth error' || response.data === 'acess denied') {
       dispatch({ type: CHECK_AUTH_FAILED, payload: 'auth failed' });
     } else {
       dispatch({ type: CHECK_AUTH_SUCCESS });
     }
   } catch (error) {
-    console.log('something wrong', error);
+    console.log('something wrong', error.message);
+    dispatch({ type: CHECK_AUTH_FAILED, payload: error.message });
   }
 };
 export const compareToken = (): DispatchType => ({ type: COMPARE_TOKEN });
@@ -176,7 +194,8 @@ export const addToBag = (id: string, amount: number) => async (
       localStorage.setItem('bag', JSON.stringify([{ id, amount }]));
     }
     const { data } = await axios.post('http://localhost:3000/addToBag', { id });
-    dispatch({ type: ADD_TO_BAG, payload: { data, amount } });
+    console.log('Action', { ...data, amounts: amount });
+    dispatch({ type: ADD_TO_BAG, payload: { ...data, amounts: amount } });
   } catch (error) {
     console.log('something wrong', error);
   }
