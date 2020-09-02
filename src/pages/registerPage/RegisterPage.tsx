@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { connect } from 'react-redux';
 import {
   Container,
@@ -10,6 +10,7 @@ import {
 import Alert from '@material-ui/lab/Alert';
 import { Link } from 'react-router-dom';
 import { registerUser } from '../../redux/action/actions';
+import { State } from '../../types/types';
 
 const useStyle = makeStyles(() => ({
   formPositioning: {
@@ -25,34 +26,47 @@ const useStyle = makeStyles(() => ({
   Link: {
     textDecoration: 'none',
   },
-
 }));
 
-const RegisterPage = (props) => {
+type Props = {
+  registerUser: (obj: {
+    email: string;
+    name: string;
+    password: string;
+  }) => Promise<void>;
+  isRegistrationSucced: boolean;
+  registrationError: string;
+};
+
+const RegisterPage = (props: Props) => {
   const { registerUser, isRegistrationSucced, registrationError } = props;
   const classes = useStyle();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     registerUser({ email, name, password });
     setEmail('');
     setName('');
     setPassword('');
   };
-  const handleChangeEmail = (e) => {
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   };
-  const handleChangeName = (e) => {
+  const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
-  const handleChangePassword = (e) => {
+  const handleChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
   return (
-    <Container m="auto">
-      <form onSubmit={handleSubmit} className={classes.formPositioning} autoComplete="off">
+    <Container>
+      <form
+        onSubmit={handleSubmit}
+        className={classes.formPositioning}
+        autoComplete="off"
+      >
         <Typography className={classes.formElement} variant="h2">
           Registration
         </Typography>
@@ -66,7 +80,15 @@ const RegisterPage = (props) => {
           value={email}
           onChange={handleChangeEmail}
         />
-        <TextField required inputProps={{ minLength: '6' }} className={classes.formElement} id="login" label="Login" value={name} onChange={handleChangeName} />
+        <TextField
+          required
+          inputProps={{ minLength: '6' }}
+          className={classes.formElement}
+          id="login"
+          label="Login"
+          value={name}
+          onChange={handleChangeName}
+        />
         <TextField
           className={classes.formElement}
           id="password"
@@ -79,15 +101,18 @@ const RegisterPage = (props) => {
         />
         {isRegistrationSucced ? (
           <Alert variant="outlined" severity="success">
-            You register successfully! =)
-            Now try to log in!
+            You register successfully! =) Now try to log in!
           </Alert>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
         {isRegistrationSucced === false ? (
           <Alert variant="outlined" severity="error">
             {registrationError}
           </Alert>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
         <div>
           <Link to="/login" className={classes.Link}>
             <Button
@@ -112,7 +137,7 @@ const RegisterPage = (props) => {
     </Container>
   );
 };
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: State) => ({
   isRegistrationSucced: state.isRegistrationSucced,
   registrationError: state.registrationError,
 });

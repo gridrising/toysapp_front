@@ -21,10 +21,45 @@ import {
   COMPARE_TOKEN,
   HIDE_LOGIN_ERROR,
   CHANGE_FILTER,
+  ADD_TO_BAG,
+  GET_BAG_SUCCESS,
+  GET_BAG_BEGIN,
+  REMOVE_PURCHASE,
 } from '../action-types';
+import { DispatchType } from '../../types/types';
+
+export interface Toy {
+  _id: string;
+  title: string;
+  status: string[];
+  price: number;
+  amounts: number;
+  body: string;
+  imageUrl: string[];
+}
+
+export type Toys = Toy[];
+
+export interface InitialState {
+  toys: Toys;
+  isLoading: boolean;
+  isLoadingSingle: boolean;
+  isLoadingTable: boolean;
+  isLoadingUser: boolean;
+  errorMsg: boolean;
+  toy: {};
+  isRegistrationSucced: null | {};
+  registrationError: null | {};
+  isUserLogged: boolean | {};
+  loggedUser: null | {};
+  loginError: null | {};
+  tokenCompared: boolean;
+  currentFilters: {};
+  purchases: Toys;
+}
 
 const initialState = {
-  toys: [],
+  toys: [] as Toys,
   isLoading: false,
   isLoadingSingle: false,
   isLoadingTable: false,
@@ -38,8 +73,12 @@ const initialState = {
   loginError: null,
   tokenCompared: false,
   currentFilters: {},
+  purchases: [] as Toys,
 };
-const rootReducer = (state = initialState, action) => {
+export const rootReducer = (
+  state: InitialState = initialState,
+  action: DispatchType
+) => {
   switch (action.type) {
     case LOADING:
       return { ...state, isLoading: true };
@@ -68,7 +107,9 @@ const rootReducer = (state = initialState, action) => {
     case UPDATE_TOY_TABLE: {
       return {
         ...state,
-        toys: state.toys.map((toy) => (toy._id === action.payload._id ? action.payload : toy)),
+        toys: state.toys.map((toy) =>
+          toy._id === action.payload._id ? action.payload : toy
+        ),
       };
     }
     case REGISTER_USER_SUCCESS: {
@@ -152,11 +193,76 @@ const rootReducer = (state = initialState, action) => {
       };
     }
     case CHANGE_FILTER: {
-      return { ...state, currentFilters: { ...state.currentFilters, [action.payload.type]: action.payload.filter } };
+      return {
+        ...state,
+        currentFilters: {
+          ...state.currentFilters,
+          [action.payload.type]: action.payload.filter,
+        },
+      };
+    }
+    case ADD_TO_BAG: {
+      let isUnique = true;
+      const uniquePurchases = state.purchases.map((purchase) => {
+        if (purchase._id === action.payload.data._id) {
+          isUnique = false;
+          return {
+            ...purchase,
+            amounts: action.payload.amount + purchase.amounts,
+          };
+        } else {
+          return { ...purchase };
+        }
+      });
+      return isUnique
+        ? {
+            ...state,
+            purchases: [
+              ...state.purchases,
+              { ...action.payload.data, amounts: action.payload.amount },
+            ],
+          }
+        : {
+            ...state,
+            purchases: [...uniquePurchases],
+          };
+    }
+    case GET_BAG_BEGIN: {
+      return {
+        ...state,
+        isLoadingUser: true,
+      };
+    }
+    case GET_BAG_SUCCESS: {
+      const purchasesWithAmount = action.payload.data.map((oneProduct: Toy) => {
+        oneProduct.amounts = 0;
+        action.payload.idsAndAmounts.forEach((element: any) => {
+          if (oneProduct._id === element.id) {
+            oneProduct.amounts += element.amount;
+          }
+        });
+        return oneProduct;
+      });
+      return {
+        ...state,
+        isLoadingUser: false,
+        purchases: purchasesWithAmount,
+      };
+    }
+    case REMOVE_PURCHASE: {
+      const oldLocalPurchases = JSON.parse(localStorage.getItem('bag') || '');
+      const newLocalPurchases = oldLocalPurchases?.filter(
+        (purchase: any) => purchase.id != action.payload
+      );
+      localStorage.setItem('bag', JSON.stringify(newLocalPurchases));
+      return {
+        ...state,
+        purchases: state.purchases.filter(
+          (purchase: Toy) => purchase._id != action.payload
+        ),
+      };
     }
     default:
       return state;
   }
 };
-
-export default rootReducer;

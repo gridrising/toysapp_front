@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles({
-
   statusButton: {
     maxWidth: '50px',
     display: 'flex',
@@ -14,7 +13,7 @@ const useStyles = makeStyles({
     padding: '4px 10px',
     backgroundColor: '#f50057',
     fontFamily: "'Roboto', 'Helvetica', 'Arial', 'sans-serif'",
-    fontWeight: '500',
+    fontWeight: 500,
     lineHeight: '1.75',
     textAlign: 'center',
     letterSpacing: '0.02857em',
@@ -28,7 +27,7 @@ const useStyles = makeStyles({
     padding: '2px 4px',
     backgroundColor: '#f50057',
     fontFamily: "'Roboto', 'Helvetica', 'Arial', 'sans-serif'",
-    fontWeight: '450',
+    fontWeight: 450,
     fontSize: '14px',
     lineHeight: '1.30',
     textAlign: 'center',
@@ -37,18 +36,26 @@ const useStyles = makeStyles({
   },
   markersContainer: {
     position: 'absolute',
-    zIndex: '1000',
     top: '10px',
     right: '0px',
   },
 });
-const StatusMarker = (props) => {
+
+type Props = {
+  status: string[];
+  card: boolean;
+};
+
+const StatusMarker = (props: Props) => {
   const { status, card } = props;
   const classes = useStyles();
   return (
     <div className={card ? classes.markersContainer : ''}>
       {status.map((oneStatus) => (
-        <div key={oneStatus} className={card ? classes.statusButton : classes.statusMarker}>
+        <div
+          key={oneStatus}
+          className={card ? classes.statusButton : classes.statusMarker}
+        >
           {oneStatus}
         </div>
       ))}
