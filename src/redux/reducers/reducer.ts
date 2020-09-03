@@ -25,6 +25,7 @@ import {
   GET_BAG_SUCCESS,
   GET_BAG_BEGIN,
   REMOVE_PURCHASE,
+  UPDATE_BAG,
 } from '../action-types';
 import { DispatchType } from '../../types/types';
 
@@ -205,6 +206,14 @@ export const rootReducer = (
       return {
         ...state,
         purchases: [...state.purchases, action.payload],
+      };
+    }
+    case UPDATE_BAG: {
+      return {
+        ...state,
+        purchases: state.purchases.map((purchase) =>
+          purchase._id === action.payload._id ? action.payload : purchase
+        ),
       };
     }
     case GET_BAG_BEGIN: {

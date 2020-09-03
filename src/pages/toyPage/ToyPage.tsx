@@ -1,4 +1,4 @@
-import React, { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
+import React, { useEffect, useState, ChangeEvent } from 'react';
 import {
   Box,
   makeStyles,
@@ -8,14 +8,13 @@ import {
   CircularProgress,
   Button,
   TextField,
-  SvgIcon,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import { getToy, addToBag } from '../../redux/action/actions';
+import { getToy, addToBag, updateBag } from '../../redux/action/actions';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Toy } from '../../redux/reducers/reducer';
-import { State, DispatchType } from '../../types/types';
+import { State } from '../../types/types';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
@@ -84,11 +83,32 @@ const ToyPage = (props: Props) => {
     }
   };
   const handleClick = () => {
-    console.log(purchases, toy);
+    const id = toy._id;
     if (!purchases.find((purchase: Toy) => purchase._id === toy._id)) {
-      addToBag(toy._id, amount);
+      if (localStorage.getItem('bag')) {
+        const prevBag = JSON.parse(localStorage.getItem('bag') || '');
+        localStorage.setItem(
+          'bag',
+          JSON.stringify([...prevBag, { id, amount }])
+        );
+      } else {
+        localStorage.setItem('bag', JSON.stringify([{ id, amount }]));
+      }
+      addToBag(id, amount);
     } else {
-      updateBag(toy._id, amount);
+      const prevBag = JSON.parse(localStorage.getItem('bag') || '');
+      const newBag = prevBag.map((element: { id: string; amount: number }) => {
+        if (element.id === id) {
+          if (element.amount + amount >= toy.amounts) {
+            updateBag(id, toy.amounts);
+            return { ...element, amount: toy.amounts };
+          } else {
+            updateBag(id, element.amount + amount);
+            return { ...element, amount: element.amount + amount };
+          }
+        } else return element;
+      });
+      localStorage.setItem('bag', JSON.stringify(newBag));
     }
   };
 
