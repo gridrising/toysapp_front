@@ -7,10 +7,12 @@ import {
   Button,
   makeStyles,
   Paper,
+  Container,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { State, Toy } from '../../types/types';
 import CheckoutComponent from '../../components/CheckoutComponent';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   contentContainer: {
@@ -19,6 +21,10 @@ const useStyles = makeStyles(() => ({
   },
   gridCheckoutItem: {
     marginTop: '25px',
+  },
+  Link: {
+    textDecoration: 'none',
+    color: 'white',
   },
 }));
 
@@ -32,7 +38,7 @@ const PurchasesBagPage = (props: Props) => {
   const fullPrice = +purchases
     .reduce((price, purchase) => price + purchase.price * purchase.amounts, 0)
     .toFixed(2);
-  return (
+  return purchases.length ? (
     <Grid container spacing={3} className={classes.contentContainer}>
       <Grid item xl={9} lg={9} md={8} sm={7} xs={12}>
         <Box m="10px">
@@ -52,6 +58,19 @@ const PurchasesBagPage = (props: Props) => {
         <CheckoutComponent fullPrice={fullPrice}></CheckoutComponent>
       </Grid>
     </Grid>
+  ) : (
+    <Container>
+      <Typography align="center" variant="h3">
+        Your Bag is empty
+      </Typography>
+      <Box display="flex" m="15px" justifyContent="center">
+        <Link className={classes.Link} to="/catalog">
+          <Button variant="contained" color="primary" size="large">
+            Go to catalog
+          </Button>
+        </Link>
+      </Box>
+    </Container>
   );
 };
 

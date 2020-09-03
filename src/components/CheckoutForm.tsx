@@ -57,7 +57,6 @@ function CheckoutForm(props: Props) {
       setTimeout(() => {
         setErrorMsg(null);
       }, 5000);
-      console.log(result.error.message);
     } else {
       // The payment has been processed!
       if (result.paymentIntent.status === 'succeeded') {

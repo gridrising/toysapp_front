@@ -14,7 +14,6 @@ import PrivateRoute from './components/privateRoute/PrivateRoute';
 import { State, DispatchType, Toy } from './types/types';
 import PaymentPage from './pages/paymentPage/PaymentPage';
 import PurchasesBagPage from './pages/purchasesBagPage/PurchasesBagPage';
-import TestPage from './pages/test/TestPage';
 
 const useStyles = makeStyles({
   progressContainer: {
@@ -83,7 +82,6 @@ const App = (props: Props) => {
             <Route path="/login" component={LoginPage} />
             <Route path="/my-bag" component={PurchasesBagPage} />
             <Route path="/payment" component={PaymentPage} />
-            <Route path="/test" component={TestPage} />
           </Switch>
         </Router>
       ) : (

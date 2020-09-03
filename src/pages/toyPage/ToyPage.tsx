@@ -1,4 +1,4 @@
-import React, { useEffect, useState, MouseEvent, ChangeEvent } from 'react';
+import React, { useEffect, useState, ChangeEvent } from 'react';
 import {
   Box,
   makeStyles,
@@ -8,14 +8,13 @@ import {
   CircularProgress,
   Button,
   TextField,
-  SvgIcon,
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import { getToy, addToBag } from '../../redux/action/actions';
+import { getToy, addToBag, updateBag } from '../../redux/action/actions';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Toy } from '../../redux/reducers/reducer';
-import { State, DispatchType } from '../../types/types';
+import { State } from '../../types/types';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
@@ -50,15 +49,25 @@ type Props = {
   isLoadingSingle: boolean;
   getToy: (id: string) => Promise<void>;
   addToBag: (id: string, amount: number) => Promise<void>;
+  updateBag: (id: string, amount: number) => Promise<void>;
   match: {
     params: {
       id: string;
     };
   };
+  purchases: Toy[];
 };
 
 const ToyPage = (props: Props) => {
-  const { toy, isLoadingSingle, getToy, match, addToBag } = props;
+  const {
+    toy,
+    isLoadingSingle,
+    getToy,
+    match,
+    purchases,
+    addToBag,
+    updateBag,
+  } = props;
   const [amount, setAmount] = useState(1);
   const classes = useStyle();
 
@@ -67,10 +76,40 @@ const ToyPage = (props: Props) => {
   }, [getToy, match.params.id]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAmount(parseInt(e.currentTarget.value, 10));
+    if (parseInt(e.currentTarget.value, 10) >= toy.amounts) {
+      setAmount(toy.amounts);
+    } else {
+      setAmount(parseInt(e.currentTarget.value, 10));
+    }
   };
   const handleClick = () => {
-    addToBag(toy._id, amount);
+    const id = toy._id;
+    if (!purchases.find((purchase: Toy) => purchase._id === toy._id)) {
+      if (localStorage.getItem('bag')) {
+        const prevBag = JSON.parse(localStorage.getItem('bag') || '');
+        localStorage.setItem(
+          'bag',
+          JSON.stringify([...prevBag, { id, amount }])
+        );
+      } else {
+        localStorage.setItem('bag', JSON.stringify([{ id, amount }]));
+      }
+      addToBag(id, amount);
+    } else {
+      const prevBag = JSON.parse(localStorage.getItem('bag') || '');
+      const newBag = prevBag.map((element: { id: string; amount: number }) => {
+        if (element.id === id) {
+          if (element.amount + amount >= toy.amounts) {
+            updateBag(id, toy.amounts);
+            return { ...element, amount: toy.amounts };
+          } else {
+            updateBag(id, element.amount + amount);
+            return { ...element, amount: element.amount + amount };
+          }
+        } else return element;
+      });
+      localStorage.setItem('bag', JSON.stringify(newBag));
+    }
   };
 
   if (isLoadingSingle) {
@@ -187,9 +226,11 @@ const ToyPage = (props: Props) => {
 const mapStateToProps = (state: State) => ({
   toy: state.toy,
   isLoadingSingle: state.isLoadingSingle,
+  purchases: state.purchases,
 });
 const mapDispatchToProps = {
   getToy,
   addToBag,
+  updateBag,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ToyPage);

@@ -56,7 +56,7 @@ function CardComponent(props: Props) {
           <CardMedia
             component="img"
             alt="Contemplative Reptile"
-            height="250"
+            height="325"
             image={imageURL}
             title="Contemplative Reptile"
           />

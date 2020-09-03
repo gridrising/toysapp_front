@@ -23,6 +23,7 @@ export const CHECK_AUTH_FAILED = 'CHECK_AUTH_FAILED';
 export const COMPARE_TOKEN = 'COMPARE_TOKEN';
 export const CHANGE_FILTER = 'CHANGE_FILTER';
 export const ADD_TO_BAG = 'ADD_TO_BAG';
+export const UPDATE_BAG = 'UPDATE_BAG';
 export const GET_BAG_BEGIN = 'GET_BAG_BEGIN';
 export const GET_BAG_SUCCESS = 'GET_BAG_SUCCESS';
 export const GET_BAG_FAILED = 'GET_BAG_FAILED';
