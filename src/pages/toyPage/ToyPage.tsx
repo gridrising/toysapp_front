@@ -134,14 +134,14 @@ const ToyPage = (props: Props) => {
               <Grid item xl={7} lg={7} md={5} sm={12} xs={12}>
                 <Box className={classes.imgContainer}>
                   <Carousel autoPlay>
-                    {toy.imageUrl?.map((oneImage) => (
+                    {[
                       <img
                         alt=""
                         height="auto"
-                        src={oneImage}
+                        src={toy.avatar}
                         key={Math.random()}
-                      />
-                    ))}
+                      />,
+                    ]}
                   </Carousel>
                 </Box>
               </Grid>

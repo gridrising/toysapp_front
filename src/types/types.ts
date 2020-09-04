@@ -8,6 +8,7 @@ export interface DispatchType {
 }
 export interface Toy {
   _id: string;
+  avatar: string;
   title: string;
   status: string[];
   price: number;

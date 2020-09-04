@@ -32,6 +32,7 @@ import { DispatchType } from '../../types/types';
 export interface Toy {
   _id: string;
   title: string;
+  avatar: string;
   status: string[];
   price: number;
   amounts: number;

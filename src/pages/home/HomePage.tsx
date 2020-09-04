@@ -106,7 +106,7 @@ const HomePage = (props: Props) => {
                 <CardComponent
                   id={toy._id}
                   title={toy.title}
-                  imageURL={toy.imageUrl[0]}
+                  avatar={toy.avatar}
                   description={toy.body}
                   price={toy.price}
                   status={['Top sales']}

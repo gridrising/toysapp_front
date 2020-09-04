@@ -18,7 +18,7 @@ const TableBagComponent = (props: Props) => {
           price={purchase.price}
           amounts={purchase.amounts}
           title={purchase.title}
-          imageUrl={purchase.imageUrl}
+          avatar={purchase.avatar}
         />
       ))}
     </Grid>

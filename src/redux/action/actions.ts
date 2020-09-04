@@ -27,6 +27,7 @@ import {
   GET_BAG_SUCCESS,
   REMOVE_PURCHASE,
   UPDATE_BAG,
+  REMOVE_PURCHASES,
 } from '../action-types';
 import { DispatchType, Toy } from '../../types/types';
 
@@ -69,19 +70,19 @@ export const addToyTable = (payload: { [key: string]: any }) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    const images = await axios.post(
-      'http://localhost:3000/uploadfile',
-      payload.imageUrl
-    );
-    console.log(images.data);
-    const { data } = await axios.post('http://localhost:3000/table', {
-      ...payload,
-      imageUrl: images.data,
-    });
+    // const images = await axios.post(
+    //   'http://localhost:3000/uploadfile',
+    //   payload.imageUrl
+    // );
+    // console.log(images.data);
+    // const { data } = await axios.post('http://localhost:3000/table', {
+    //   ...payload,
+    //   imageUrl: images.data,
+    // });
+    const { data } = await axios.post('http://localhost:3000/table', payload);
     const datatWithId = {
       ...payload,
       _id: data._id,
-      imageUrl: images.data,
     };
     dispatch({ type: ADD_TOY_TABLE, payload: datatWithId });
   } catch (error) {
@@ -103,21 +104,19 @@ export const updateToyTable = (payload: { [key: string]: any }) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    const images = await axios.post(
-      'http://localhost:3000/uploadfile',
-      payload.imageUrl
-    );
-    console.log(images.data);
-    await axios.patch(`http://localhost:3000/table/${payload._id}`, {
-      payload,
-      imageUrl: images.data,
-    });
+    // const images = await axios.post(
+    //   'http://localhost:3000/uploadfile',
+    //   payload.imageUrl
+    // );
+    // console.log(images.data);
+    // await axios.patch(`http://localhost:3000/table/${payload._id}`, {
+    //   ...payload,
+    //   imageUrl: images.data,
+    // });
+    await axios.patch(`http://localhost:3000/table/${payload._id}`, payload);
     dispatch({
       type: UPDATE_TOY_TABLE,
-      payload: {
-        ...payload,
-        imageUrl: images.data,
-      },
+      payload,
     });
   } catch (error) {
     console.log(error);
@@ -222,3 +221,14 @@ export const removePurchase = (id: string): DispatchType => ({
   type: REMOVE_PURCHASE,
   payload: id,
 });
+export const paymentIsSucceeded = (purchases: Toy[]) => async (
+  dispatch: (obj: DispatchType) => Promise<any>
+) => {
+  try {
+    const { data } = await axios.post(
+      'http://localhost:3000/updateamounts',
+      purchases
+    );
+    dispatch({ type: REMOVE_PURCHASES });
+  } catch (error) {}
+};

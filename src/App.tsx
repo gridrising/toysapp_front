@@ -13,6 +13,7 @@ import { checkAuth, compareToken, getBag } from './redux/action/actions';
 import PrivateRoute from './components/privateRoute/PrivateRoute';
 import { State, DispatchType, Toy } from './types/types';
 import PaymentPage from './pages/paymentPage/PaymentPage';
+import TestPage from './pages/test/TestPage';
 import PurchasesBagPage from './pages/purchasesBagPage/PurchasesBagPage';
 
 const useStyles = makeStyles({
@@ -82,6 +83,7 @@ const App = (props: Props) => {
             <Route path="/login" component={LoginPage} />
             <Route path="/my-bag" component={PurchasesBagPage} />
             <Route path="/payment" component={PaymentPage} />
+            <Route path="/test" component={TestPage} />
           </Switch>
         </Router>
       ) : (
