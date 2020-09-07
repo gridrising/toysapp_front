@@ -22,7 +22,7 @@ import MultiplieSelect from './MultipleSelectTableComponent';
 import StatusMarker from './StatusMarker';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { Toy, State } from '../types/types';
-import TestPage from '../pages/test/TestPage';
+import AvatarModal from './AvatarModal';
 
 const useStyles = makeStyles((theme) => ({
   statusMarker: {
@@ -86,8 +86,11 @@ const MaterialTableDemo = (props: Props) => {
         title: 'Avatar',
         field: 'avatar',
         align: 'center',
-        editComponent: (imageProps: any) => {
-          console.log(imageProps.onChange);
+        editComponent: (imageProps: {
+          value: string | FileList;
+          onChange: (arg: any) => any;
+        }) => {
+          console.log(imageProps.value);
           return (
             // <input
             //   type="file"
@@ -97,10 +100,14 @@ const MaterialTableDemo = (props: Props) => {
             //   onChange={(e) => imageProps.onChange(e.target.files)}
             // ></input>
             <Box display="flex" justifyContent="center">
-              <TestPage
-                src={imageProps.value}
+              <AvatarModal
+                src={
+                  typeof imageProps.value == 'string'
+                    ? imageProps.value
+                    : 'https://originalnameforbucketforimages.s3.eu-central-1.amazonaws.com/placeholderForAvatar.png'
+                }
                 change={imageProps.onChange}
-              ></TestPage>
+              ></AvatarModal>
             </Box>
             // <TextField
             //   label="Images"
@@ -113,6 +120,7 @@ const MaterialTableDemo = (props: Props) => {
           <Link to={`/toypage/${rowData._id}`}>
             <img
               src={rowData.avatar}
+              defaultValue="https://originalnameforbucketforimages.s3.eu-central-1.amazonaws.com/placeholderForAvatar.png"
               alt=""
               style={{ width: 55, borderRadius: '50%' }}
             />

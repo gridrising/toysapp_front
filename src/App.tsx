@@ -13,7 +13,7 @@ import { checkAuth, compareToken, getBag } from './redux/action/actions';
 import PrivateRoute from './components/privateRoute/PrivateRoute';
 import { State, DispatchType, Toy } from './types/types';
 import PaymentPage from './pages/paymentPage/PaymentPage';
-import TestPage from './pages/test/TestPage';
+import TestPage from './components/AvatarModal';
 import PurchasesBagPage from './pages/purchasesBagPage/PurchasesBagPage';
 
 const useStyles = makeStyles({

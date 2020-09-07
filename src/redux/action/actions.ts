@@ -28,6 +28,7 @@ import {
   REMOVE_PURCHASE,
   UPDATE_BAG,
   REMOVE_PURCHASES,
+  UPLOAD_TOY_IMAGES,
 } from '../action-types';
 import { DispatchType, Toy } from '../../types/types';
 
@@ -230,5 +231,16 @@ export const paymentIsSucceeded = (purchases: Toy[]) => async (
       purchases
     );
     dispatch({ type: REMOVE_PURCHASES });
+  } catch (error) {}
+};
+export const uploadToyImages = (
+  id: string,
+  files: { [key: string]: any }
+) => async (dispatch: (obj: DispatchType) => Promise<any>) => {
+  try {
+    const images = await axios.post('http://localhost:3000/uploadfile', files);
+    console.log(images.data);
+    await axios.patch(`http://localhost:3000/uploadimages/${id}`, images.data);
+    dispatch({ type: UPLOAD_TOY_IMAGES, payload: { images: images.data, id } });
   } catch (error) {}
 };

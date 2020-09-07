@@ -26,6 +26,7 @@ import {
   GET_BAG_BEGIN,
   REMOVE_PURCHASE,
   UPDATE_BAG,
+  UPLOAD_TOY_IMAGES,
 } from '../action-types';
 import { DispatchType } from '../../types/types';
 
@@ -155,7 +156,7 @@ export const rootReducer = (
       return {
         ...state,
         isLoadingUser: false,
-        isUserLogged: false,
+        isUserLogged: true,
         loginError: action.payload,
       };
     }
@@ -250,6 +251,13 @@ export const rootReducer = (
         purchases: state.purchases.filter(
           (purchase: Toy) => purchase._id != action.payload
         ),
+      };
+    }
+    case UPLOAD_TOY_IMAGES: {
+      console.log(action.payload);
+      return {
+        ...state,
+        toy: { ...state.toy, imageUrl: action.payload.images },
       };
     }
     default:

@@ -4,6 +4,7 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { Button } from '@material-ui/core';
+import Axios from 'axios';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,6 +43,19 @@ export default function TransitionsModal(props: Props) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files);
   };
+  const handleClick = async () => {
+    console.log(file);
+    if (file) {
+      const formData = new FormData();
+      formData.append('image', file[0]);
+      const imageUrl = await Axios.post(
+        'http://localhost:3000/uploadfile',
+        formData
+      );
+      console.log(imageUrl);
+      change(imageUrl.data[0]);
+    }
+  };
   console.log(file);
   return (
     <div>
@@ -73,7 +87,7 @@ export default function TransitionsModal(props: Props) {
                 accept=".jpg, .jpeg, .png"
                 onChange={handleChange}
               ></input>
-              <Button onClick={() => change(file)}>Upload</Button>
+              <Button onClick={handleClick}>Upload</Button>
             </p>
           </div>
         </Fade>
