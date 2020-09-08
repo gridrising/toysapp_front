@@ -156,7 +156,7 @@ export const rootReducer = (
       return {
         ...state,
         isLoadingUser: false,
-        isUserLogged: true,
+        isUserLogged: false,
         loginError: action.payload,
       };
     }

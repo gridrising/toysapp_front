@@ -72,14 +72,6 @@ const MaterialTableDemo = (props: Props) => {
     }
   }, [getToysTable, toysTable]);
 
-  const body = (
-    <div>
-      <h2 id="simple-modal-title">Text in a modal</h2>
-      <p id="simple-modal-description">
-        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-      </p>
-    </div>
-  );
   const [state] = useState({
     columns: [
       {
@@ -181,6 +173,10 @@ const MaterialTableDemo = (props: Props) => {
             //     formData.append('image', element);
             //   });
             // }
+            if (!newData.avatar) {
+              newData.avatar =
+                'https://originalnameforbucketforimages.s3.eu-central-1.amazonaws.com/placeholderForAvatar.png';
+            }
             await addToyTable(newData);
             resolve();
           }),
