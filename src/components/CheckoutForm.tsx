@@ -21,6 +21,7 @@ function CheckoutForm(props: Props) {
   const { purchases, paymentIsSucceeded } = props;
   const [isSucceeded, setIsSucceeded] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -29,6 +30,7 @@ function CheckoutForm(props: Props) {
     // We don't want to let default form submission happen here,
     // which would refresh the page.
     e.preventDefault();
+    setIsLoading(true);
 
     const fullPrice = purchases
       .reduce((price, purchase) => price + purchase.price * purchase.amounts, 0)
@@ -39,9 +41,12 @@ function CheckoutForm(props: Props) {
       // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
-    const response = await axios.post('http://localhost:3000/secret', {
-      fullPrice,
-    });
+    const response = await axios.post(
+      `${process.env.REACT_APP_SERVER_ADRESS}secret`,
+      {
+        fullPrice,
+      }
+    );
 
     const { client_secret: client_secret } = response.data;
 
@@ -56,6 +61,7 @@ function CheckoutForm(props: Props) {
 
     if (result.error) {
       setErrorMsg(result.error.message);
+      setIsLoading(false);
       setTimeout(() => {
         setErrorMsg(null);
       }, 5000);
@@ -68,14 +74,16 @@ function CheckoutForm(props: Props) {
         // payment_intent.succeeded event that handles any business critical
         // post-payment actions.
         setIsSucceeded(true);
+        setIsLoading(false);
+        localStorage.removeItem('bag');
+        paymentIsSucceeded(purchases);
         setTimeout(() => {
           setIsSucceeded(false);
         }, 5000);
-        localStorage.removeItem('bag');
-        paymentIsSucceeded(purchases);
 
         console.log('Succeeded');
       } else {
+        setIsLoading(false);
         console.log('undefined');
       }
     }
@@ -83,19 +91,22 @@ function CheckoutForm(props: Props) {
 
   if (!localStorage.getItem('bag')) return <Redirect to="/catalog"></Redirect>;
   return (
-    <form onSubmit={handleSubmit}>
-      {errorMsg ? <Alert severity="error">{errorMsg}</Alert> : null}
-      {isSucceeded ? <Alert>Payment succeeded</Alert> : null}
-      <CardSection />
-      <Button
-        type="submit"
-        disabled={!stripe}
-        variant="contained"
-        color="primary"
-      >
-        Confirm
-      </Button>
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        {errorMsg ? <Alert severity="error">{errorMsg}</Alert> : null}
+        {isSucceeded ? <Alert>Payment succeeded</Alert> : null}
+        <CardSection />
+        <Button
+          type="submit"
+          disabled={!stripe}
+          variant="contained"
+          color="primary"
+        >
+          Confirm
+        </Button>
+      </form>
+      {isLoading ? <CircularProgress></CircularProgress> : null}
+    </>
   );
 }
 

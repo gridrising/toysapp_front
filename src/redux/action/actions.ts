@@ -37,7 +37,9 @@ export const getToys = () => async (
 ) => {
   try {
     dispatch({ type: LOADING });
-    const { data } = await axios.get('http://localhost:3000/toys');
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_SERVER_ADRESS}toys`
+    );
     dispatch({ type: LOADING_TOYS_SUCCESS, payload: data });
   } catch (err) {
     console.log(err, LOADING_TOYS_FAILED);
@@ -48,7 +50,9 @@ export const getToy = (id: string) => async (
 ) => {
   try {
     dispatch({ type: LOADING_SINGLE });
-    const { data } = await axios.get(`http://localhost:3000/toypage/${id}`);
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_SERVER_ADRESS}toypage/${id}`
+    );
 
     dispatch({ type: LOADING_TOY_SUCCESS, payload: data });
     return data;
@@ -61,7 +65,9 @@ export const getToysTable = () => async (
 ) => {
   try {
     dispatch({ type: LOADING_TABLE });
-    const { data } = await axios.get('http://localhost:3000/toys');
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_SERVER_ADRESS}toys`
+    );
     dispatch({ type: LOADING_TOYS_SUCCESS, payload: data });
   } catch (error) {
     console.log(error, LOADING_TOYS_FAILED);
@@ -71,16 +77,10 @@ export const addToyTable = (payload: { [key: string]: any }) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    // const images = await axios.post(
-    //   'http://localhost:3000/uploadfile',
-    //   payload.imageUrl
-    // );
-    // console.log(images.data);
-    // const { data } = await axios.post('http://localhost:3000/table', {
-    //   ...payload,
-    //   imageUrl: images.data,
-    // });
-    const { data } = await axios.post('http://localhost:3000/table', payload);
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_SERVER_ADRESS}table`,
+      payload
+    );
     const datatWithId = {
       ...payload,
       _id: data._id,
@@ -95,7 +95,9 @@ export const deleteToyTable = (payload: string) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    await axios.delete(`http://localhost:3000/table/${payload}`);
+    await axios.delete(
+      `${process.env.REACT_APP_SERVER_ADRESS}table/${payload}`
+    );
     dispatch({ type: DELETE_TOY_TABLE, payload });
   } catch (error) {
     console.log(error);
@@ -105,16 +107,10 @@ export const updateToyTable = (payload: { [key: string]: any }) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    // const images = await axios.post(
-    //   'http://localhost:3000/uploadfile',
-    //   payload.imageUrl
-    // );
-    // console.log(images.data);
-    // await axios.patch(`http://localhost:3000/table/${payload._id}`, {
-    //   ...payload,
-    //   imageUrl: images.data,
-    // });
-    await axios.patch(`http://localhost:3000/table/${payload._id}`, payload);
+    await axios.patch(
+      `${process.env.REACT_APP_SERVER_ADRESS}table/${payload._id}`,
+      payload
+    );
     dispatch({
       type: UPDATE_TOY_TABLE,
       payload,
@@ -130,7 +126,7 @@ export const registerUser = (payload: {
   password: string;
 }) => async (dispatch: (obj: DispatchType) => Promise<any>) => {
   try {
-    await axios.post('http://localhost:3000/register', payload);
+    await axios.post(`${process.env.REACT_APP_SERVER_ADRESS}register`, payload);
     dispatch({ type: REGISTER_USER_SUCCESS, payload });
     setTimeout(() => dispatch({ type: HIDE_REGISTRATION_MSG }), 5000);
   } catch (error) {
@@ -144,7 +140,10 @@ export const loginUser = (payload: {
 }) => async (dispatch: (obj: DispatchType) => Promise<any>) => {
   try {
     dispatch({ type: LOGGINING_BEGIN });
-    const { data } = await axios.post('http://localhost:3000/login', payload);
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_SERVER_ADRESS}login`,
+      payload
+    );
     dispatch({ type: LOGGINING_SUCCESS, payload: data });
   } catch (error) {
     setTimeout(() => dispatch({ type: HIDE_LOGIN_ERROR }), 5000);
@@ -156,10 +155,13 @@ export const checkAuth = (token: string | null, id: string) => async (
 ) => {
   try {
     dispatch({ type: CHECK_AUTH_BEGIN });
-    const response = await axios.post('http://localhost:3000/users/logged', {
-      token,
-      id,
-    });
+    const response = await axios.post(
+      `${process.env.REACT_APP_SERVER_ADRESS}users/logged`,
+      {
+        token,
+        id,
+      }
+    );
     if (response.data === 'auth error' || response.data === 'acess denied') {
       dispatch({ type: CHECK_AUTH_FAILED, payload: 'auth failed' });
     } else {
@@ -178,7 +180,9 @@ export const changeFilter = (payload: object) => async (
   try {
     dispatch({ type: LOADING });
     dispatch({ type: CHANGE_FILTER, payload });
-    const { data } = await axios.get('http://localhost:3000/toys');
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_SERVER_ADRESS}toys`
+    );
     dispatch({ type: LOADING_TOYS_SUCCESS, payload: data });
   } catch (error) {
     console.log('something wrong', error);
@@ -188,7 +192,12 @@ export const addToBag = (id: string, amount: number) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    const { data } = await axios.post('http://localhost:3000/addToBag', { id });
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_SERVER_ADRESS}addToBag`,
+      {
+        id,
+      }
+    );
     dispatch({ type: ADD_TO_BAG, payload: { ...data, amounts: amount } });
   } catch (error) {
     console.log('something wrong', error);
@@ -199,8 +208,12 @@ export const updateBag = (id: string, amount: number) => async (
   dispatch: (obj: DispatchType) => Promise<any>
 ) => {
   try {
-    const { data } = await axios.post('http://localhost:3000/addToBag', { id });
-    console.log({ ...data, amounts: amount });
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_SERVER_ADRESS}addToBag`,
+      {
+        id,
+      }
+    );
     dispatch({ type: UPDATE_BAG, payload: { ...data, amounts: amount } });
   } catch (error) {
     console.log('something wrong', error);
@@ -212,7 +225,10 @@ export const getBag = (ids: string[], idsAndAmounts: any[]) => async (
 ) => {
   try {
     dispatch({ type: GET_BAG_BEGIN });
-    const { data } = await axios.post('http://localhost:3000/bag', ids);
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_SERVER_ADRESS}bag`,
+      ids
+    );
     dispatch({ type: GET_BAG_SUCCESS, payload: { data, idsAndAmounts } });
   } catch (error) {
     console.log('something wrong', error);
@@ -227,20 +243,29 @@ export const paymentIsSucceeded = (purchases: Toy[]) => async (
 ) => {
   try {
     const { data } = await axios.post(
-      'http://localhost:3000/updateamounts',
+      `${process.env.REACT_APP_SERVER_ADRESS}updateamounts`,
       purchases
     );
+    console.log(data);
     dispatch({ type: REMOVE_PURCHASES });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 export const uploadToyImages = (
   id: string,
   files: { [key: string]: any }
 ) => async (dispatch: (obj: DispatchType) => Promise<any>) => {
   try {
-    const images = await axios.post('http://localhost:3000/uploadfile', files);
+    const images = await axios.post(
+      `${process.env.REACT_APP_SERVER_ADRESS}uploadfile`,
+      files
+    );
     console.log(images.data);
-    await axios.patch(`http://localhost:3000/uploadimages/${id}`, images.data);
+    await axios.patch(
+      `${process.env.REACT_APP_SERVER_ADRESS}uploadimages/${id}`,
+      images.data
+    );
     dispatch({ type: UPLOAD_TOY_IMAGES, payload: { images: images.data, id } });
   } catch (error) {}
 };

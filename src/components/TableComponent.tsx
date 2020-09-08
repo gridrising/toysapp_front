@@ -84,13 +84,6 @@ const MaterialTableDemo = (props: Props) => {
         }) => {
           console.log(imageProps.value);
           return (
-            // <input
-            //   type="file"
-            //   name="image"
-            //   multiple
-            //   accept=".jpg, .jpeg, .png"
-            //   onChange={(e) => imageProps.onChange(e.target.files)}
-            // ></input>
             <Box display="flex" justifyContent="center">
               <AvatarModal
                 src={
@@ -101,11 +94,6 @@ const MaterialTableDemo = (props: Props) => {
                 change={imageProps.onChange}
               ></AvatarModal>
             </Box>
-            // <TextField
-            //   label="Images"
-            //   value={imageProps.value}
-            //   onChange={(e) => imageProps.onChange(e.target.value)}
-            // />
           );
         },
         render: (rowData: any) => (
@@ -167,12 +155,6 @@ const MaterialTableDemo = (props: Props) => {
       editable={{
         onRowAdd: (newData: { [key: string]: any }) =>
           new Promise(async (resolve) => {
-            // const formData = new FormData();
-            // if (newData.imageUrl) {
-            //   [...newData.imageUrl].forEach((element: File) => {
-            //     formData.append('image', element);
-            //   });
-            // }
             if (!newData.avatar) {
               newData.avatar =
                 'https://originalnameforbucketforimages.s3.eu-central-1.amazonaws.com/placeholderForAvatar.png';
@@ -182,12 +164,6 @@ const MaterialTableDemo = (props: Props) => {
           }),
         onRowUpdate: (newData: { [key: string]: any }) =>
           new Promise(async (resolve) => {
-            // const formData = new FormData();
-            // if (newData.imageUrl) {
-            //   [...newData.imageUrl].forEach((element: File) => {
-            //     formData.append('image', element);
-            //   });
-            // }
             await updateToyTable(newData);
             resolve();
           }),

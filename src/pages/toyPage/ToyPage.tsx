@@ -52,6 +52,7 @@ const useStyle = makeStyles({
 type Props = {
   toy: Toy;
   isLoadingSingle: boolean;
+  isUserLogged: boolean;
   getToy: (id: string) => Promise<void>;
   addToBag: (id: string, amount: number) => Promise<void>;
   updateBag: (id: string, amount: number) => Promise<void>;
@@ -68,6 +69,7 @@ const ToyPage = (props: Props) => {
   const {
     toy,
     isLoadingSingle,
+    isUserLogged,
     getToy,
     match,
     purchases,
@@ -177,14 +179,18 @@ const ToyPage = (props: Props) => {
                           />,
                         ]}
                   </Carousel>
-                  <input
-                    type="file"
-                    name="image"
-                    multiple
-                    accept=".jpg, .jpeg, .png"
-                    onChange={handleFileInputChange}
-                  ></input>
-                  <Button onClick={handleFileInputClick}>Upload</Button>
+                  {isUserLogged ? (
+                    <>
+                      <input
+                        type="file"
+                        name="image"
+                        multiple
+                        accept=".jpg, .jpeg, .png"
+                        onChange={handleFileInputChange}
+                      ></input>
+                      <Button onClick={handleFileInputClick}>Upload</Button>
+                    </>
+                  ) : null}
                 </Box>
               </Grid>
               <Grid
@@ -268,6 +274,7 @@ const ToyPage = (props: Props) => {
 const mapStateToProps = (state: State) => ({
   toy: state.toy,
   isLoadingSingle: state.isLoadingSingle,
+  isUserLogged: state.isUserLogged,
   purchases: state.purchases,
 });
 const mapDispatchToProps = {

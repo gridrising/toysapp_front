@@ -27,6 +27,7 @@ import {
   REMOVE_PURCHASE,
   UPDATE_BAG,
   UPLOAD_TOY_IMAGES,
+  REMOVE_PURCHASES,
 } from '../action-types';
 import { DispatchType } from '../../types/types';
 
@@ -251,6 +252,12 @@ export const rootReducer = (
         purchases: state.purchases.filter(
           (purchase: Toy) => purchase._id != action.payload
         ),
+      };
+    }
+    case REMOVE_PURCHASES: {
+      return {
+        ...state,
+        purchases: [],
       };
     }
     case UPLOAD_TOY_IMAGES: {
