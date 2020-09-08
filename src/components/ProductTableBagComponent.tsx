@@ -32,13 +32,13 @@ type Props = {
   amounts: number;
   title: string;
   _id: string;
-  imageUrl: string[];
+  avatar: string;
   removePurchase: (_id: string) => DispatchType;
 };
 
 const ProductTableBagComponent = (props: Props) => {
   const classes = useStyles();
-  const { price, amounts, title, _id, imageUrl, removePurchase } = props;
+  const { price, amounts, title, _id, avatar, removePurchase } = props;
   const handleClick = () => {
     removePurchase(_id);
   };
@@ -63,7 +63,7 @@ const ProductTableBagComponent = (props: Props) => {
           >
             <img
               className={classes.toyImage}
-              src={imageUrl[0]}
+              src={avatar}
               height="auto"
               width="auto"
             ></img>

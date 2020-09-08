@@ -11,7 +11,12 @@ import {
 } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import { getToy, addToBag, updateBag } from '../../redux/action/actions';
+import {
+  getToy,
+  addToBag,
+  updateBag,
+  uploadToyImages,
+} from '../../redux/action/actions';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Toy } from '../../redux/reducers/reducer';
 import { State } from '../../types/types';
@@ -50,6 +55,7 @@ type Props = {
   getToy: (id: string) => Promise<void>;
   addToBag: (id: string, amount: number) => Promise<void>;
   updateBag: (id: string, amount: number) => Promise<void>;
+  uploadToyImages: (id: string, files: { [key: string]: any }) => Promise<void>;
   match: {
     params: {
       id: string;
@@ -67,8 +73,10 @@ const ToyPage = (props: Props) => {
     purchases,
     addToBag,
     updateBag,
+    uploadToyImages,
   } = props;
   const [amount, setAmount] = useState(1);
+  const [files, setFiles] = useState<FileList | null>(null);
   const classes = useStyle();
 
   useEffect(() => {
@@ -112,6 +120,20 @@ const ToyPage = (props: Props) => {
     }
   };
 
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFiles(e.target.files);
+  };
+
+  const handleFileInputClick = () => {
+    if (files) {
+      const formData = new FormData();
+      [...files].forEach((element: File) => {
+        formData.append('image', element);
+      });
+      uploadToyImages(toy._id, formData);
+    }
+  };
+
   if (isLoadingSingle) {
     return (
       <Container className={classes.progressContainer}>
@@ -134,15 +156,35 @@ const ToyPage = (props: Props) => {
               <Grid item xl={7} lg={7} md={5} sm={12} xs={12}>
                 <Box className={classes.imgContainer}>
                   <Carousel autoPlay>
-                    {toy.imageUrl?.map((oneImage) => (
-                      <img
-                        alt=""
-                        height="auto"
-                        src={oneImage}
-                        key={Math.random()}
-                      />
-                    ))}
+                    {toy.imageUrl
+                      ? [
+                          toy.avatar,
+                          ...toy.imageUrl,
+                        ].map((imageUrl: string) => (
+                          <img
+                            alt=""
+                            height="auto"
+                            src={imageUrl}
+                            key={Math.random()}
+                          />
+                        ))
+                      : [
+                          <img
+                            alt=""
+                            height="auto"
+                            src={toy.avatar}
+                            key={Math.random()}
+                          />,
+                        ]}
                   </Carousel>
+                  <input
+                    type="file"
+                    name="image"
+                    multiple
+                    accept=".jpg, .jpeg, .png"
+                    onChange={handleFileInputChange}
+                  ></input>
+                  <Button onClick={handleFileInputClick}>Upload</Button>
                 </Box>
               </Grid>
               <Grid
@@ -232,5 +274,6 @@ const mapDispatchToProps = {
   getToy,
   addToBag,
   updateBag,
+  uploadToyImages,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ToyPage);

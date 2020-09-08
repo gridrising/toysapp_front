@@ -1,9 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import MaterialTable, { Column } from 'material-table';
 import { connect, Options } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
-import { TextField, Box } from '@material-ui/core';
+import {
+  TextField,
+  Box,
+  Avatar,
+  Container,
+  Modal,
+  Fade,
+} from '@material-ui/core';
+import Backdrop from '@material-ui/core/Backdrop';
 import {
   getToysTable,
   addToyTable,
@@ -14,8 +22,9 @@ import MultiplieSelect from './MultipleSelectTableComponent';
 import StatusMarker from './StatusMarker';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { Toy, State } from '../types/types';
+import AvatarModal from './AvatarModal';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   statusMarker: {
     position: 'relative',
     top: '0',
@@ -27,7 +36,18 @@ const useStyles = makeStyles({
     boxOrient: 'vertical',
     overflow: 'hidden',
   },
-});
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 type Props = {
   toysTable: Toy[];
@@ -52,30 +72,38 @@ const MaterialTableDemo = (props: Props) => {
     }
   }, [getToysTable, toysTable]);
 
-  const [state] = React.useState({
+  const [state] = useState({
     columns: [
       {
         title: 'Avatar',
-        field: 'imageUrl',
+        field: 'avatar',
         align: 'center',
-        editComponent: (imageProps: any) => {
+        editComponent: (imageProps: {
+          value: string | FileList;
+          onChange: (arg: any) => any;
+        }) => {
+          console.log(imageProps.value);
           return (
-            <input
-              type="file"
-              name="image"
-              multiple
-              accept=".jpg, .jpeg, .png"
-              onChange={(e) => imageProps.onChange(e.target.files)}
-            ></input>
+            // <input
+            //   type="file"
+            //   name="image"
+            //   multiple
+            //   accept=".jpg, .jpeg, .png"
+            //   onChange={(e) => imageProps.onChange(e.target.files)}
+            // ></input>
+            <Box display="flex" justifyContent="center">
+              <AvatarModal
+                src={
+                  typeof imageProps.value == 'string'
+                    ? imageProps.value
+                    : 'https://originalnameforbucketforimages.s3.eu-central-1.amazonaws.com/placeholderForAvatar.png'
+                }
+                change={imageProps.onChange}
+              ></AvatarModal>
+            </Box>
             // <TextField
             //   label="Images"
-            //   multiline
-            //   rowsMax={4}
-            //   value={
-            //     typeof imageProps.value === 'object'
-            //       ? imageProps.value.join('\n')
-            //       : imageProps.value
-            //   }
+            //   value={imageProps.value}
             //   onChange={(e) => imageProps.onChange(e.target.value)}
             // />
           );
@@ -83,7 +111,8 @@ const MaterialTableDemo = (props: Props) => {
         render: (rowData: any) => (
           <Link to={`/toypage/${rowData._id}`}>
             <img
-              src={rowData.imageUrl[0]}
+              src={rowData.avatar}
+              defaultValue="https://originalnameforbucketforimages.s3.eu-central-1.amazonaws.com/placeholderForAvatar.png"
               alt=""
               style={{ width: 55, borderRadius: '50%' }}
             />
@@ -138,24 +167,28 @@ const MaterialTableDemo = (props: Props) => {
       editable={{
         onRowAdd: (newData: { [key: string]: any }) =>
           new Promise(async (resolve) => {
-            const formData = new FormData();
-            if (newData.imageUrl) {
-              [...newData.imageUrl].forEach((element: File) => {
-                formData.append('image', element);
-              });
+            // const formData = new FormData();
+            // if (newData.imageUrl) {
+            //   [...newData.imageUrl].forEach((element: File) => {
+            //     formData.append('image', element);
+            //   });
+            // }
+            if (!newData.avatar) {
+              newData.avatar =
+                'https://originalnameforbucketforimages.s3.eu-central-1.amazonaws.com/placeholderForAvatar.png';
             }
-            await addToyTable({ ...newData, imageUrl: formData });
+            await addToyTable(newData);
             resolve();
           }),
         onRowUpdate: (newData: { [key: string]: any }) =>
           new Promise(async (resolve) => {
-            const formData = new FormData();
-            if (newData.imageUrl) {
-              [...newData.imageUrl].forEach((element: File) => {
-                formData.append('image', element);
-              });
-            }
-            await updateToyTable({ ...newData, imageUrl: formData });
+            // const formData = new FormData();
+            // if (newData.imageUrl) {
+            //   [...newData.imageUrl].forEach((element: File) => {
+            //     formData.append('image', element);
+            //   });
+            // }
+            await updateToyTable(newData);
             resolve();
           }),
         onRowDelete: (oldData) =>

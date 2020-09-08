@@ -7,16 +7,18 @@ import { connect } from 'react-redux';
 import { State } from '../types/types';
 import { Toy } from '../redux/reducers/reducer';
 import axios from 'axios';
-import { Button } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { Redirect } from 'react-router-dom';
+import { paymentIsSucceeded } from '../redux/action/actions';
 
 type Props = {
   purchases: Toy[];
+  paymentIsSucceeded: (array: Toy[]) => Promise<void>;
 };
 
 function CheckoutForm(props: Props) {
-  const { purchases } = props;
+  const { purchases, paymentIsSucceeded } = props;
   const [isSucceeded, setIsSucceeded] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -69,6 +71,9 @@ function CheckoutForm(props: Props) {
         setTimeout(() => {
           setIsSucceeded(false);
         }, 5000);
+        localStorage.removeItem('bag');
+        paymentIsSucceeded(purchases);
+
         console.log('Succeeded');
       } else {
         console.log('undefined');
@@ -76,6 +81,7 @@ function CheckoutForm(props: Props) {
     }
   };
 
+  if (!localStorage.getItem('bag')) return <Redirect to="/catalog"></Redirect>;
   return (
     <form onSubmit={handleSubmit}>
       {errorMsg ? <Alert severity="error">{errorMsg}</Alert> : null}
@@ -96,5 +102,8 @@ function CheckoutForm(props: Props) {
 const mapStateToProps = (state: State) => ({
   purchases: state.purchases,
 });
+const mapDispatchToProps = {
+  paymentIsSucceeded,
+};
 
-export default connect(mapStateToProps)(CheckoutForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CheckoutForm);

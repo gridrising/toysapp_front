@@ -26,12 +26,14 @@ import {
   GET_BAG_BEGIN,
   REMOVE_PURCHASE,
   UPDATE_BAG,
+  UPLOAD_TOY_IMAGES,
 } from '../action-types';
 import { DispatchType } from '../../types/types';
 
 export interface Toy {
   _id: string;
   title: string;
+  avatar: string;
   status: string[];
   price: number;
   amounts: number;
@@ -249,6 +251,13 @@ export const rootReducer = (
         purchases: state.purchases.filter(
           (purchase: Toy) => purchase._id != action.payload
         ),
+      };
+    }
+    case UPLOAD_TOY_IMAGES: {
+      console.log(action.payload);
+      return {
+        ...state,
+        toy: { ...state.toy, imageUrl: action.payload.images },
       };
     }
     default:

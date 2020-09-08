@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 type Props = {
   id: string;
   title: string;
-  imageURL: string;
+  avatar: string;
   description: string;
   price: Number;
   status: string[];
@@ -47,7 +47,7 @@ type Props = {
 
 function CardComponent(props: Props) {
   const classes = useStyles();
-  const { id, title, imageURL, description, price, status } = props;
+  const { id, title, avatar, description, price, status } = props;
   return (
     <Link to={`/toypage/${id}`} className={classes.cardLink}>
       <Card className={classes.root}>
@@ -57,7 +57,7 @@ function CardComponent(props: Props) {
             component="img"
             alt="Contemplative Reptile"
             height="325"
-            image={imageURL}
+            image={avatar}
             title="Contemplative Reptile"
           />
           <CardContent>
